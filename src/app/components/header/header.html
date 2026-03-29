@@ -1,0 +1,54 @@
+<header class="header">
+  <div class="left-part">
+    <button class="back-button" type="button" title="Back" (click)="goBack()">
+      <i class="fa-solid fa-arrow-left"></i>
+    </button>
+
+    <button class="menu-toggle" (click)="toggleSidebar.emit()">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <a routerLink="/dashboard" routerLinkActive="active">
+      <div class="logo"><i class="fa-solid fa-trophy"></i></div>
+    </a>
+
+    <div>
+      <h2 class="app-title">Sportex <span class="erp-word">ERP</span></h2>
+    </div>
+  </div>
+
+
+
+  <!-- ===== USER ACTIONS ===== -->
+  <div class="user-actions">
+    <!-- ===== SEARCH BAR ===== -->
+  <div class="search-bar">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input
+      type="text"
+      placeholder="Search Here ..."
+      (input)="onSearch($event)"
+    />
+  </div>
+    <div class="profile-menu">
+      <i class="fa-solid fa-user"></i>
+      <span>{{ userName() }}</span>
+    </div>
+
+    <div class="notification-wrapper">
+      <div class="notification-bell" (click)="toggleNotification()">
+        <i class="fa-solid fa-bell"></i>
+        <span class="notification-count">{{ notificationCount }}</span>
+      </div>
+      <app-notification
+        (countChanged)="updateNotificationCount($event)">
+      </app-notification>
+    </div>
+
+    <div class="log-button" (click)="openLogoutModal()">
+      <i class="fa-solid fa-right-from-bracket"></i>
+    </div>
+  </div>
+</header>
+
+<app-logout-modal></app-logout-modal>

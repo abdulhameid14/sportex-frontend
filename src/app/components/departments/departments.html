@@ -1,0 +1,47 @@
+<div id="page-tasks" class="page">
+  <div class="page-header">
+    <h1 class="page-title">{{ 'departments.departments' | translate }}</h1>
+    <div class="page-actions">
+      <button *hasPermission="'department:create'" class="btn btn-header" (click)="openNewDepartmentModal()">{{ 'departments.new_department' | translate }}</button>
+    </div>
+  </div>
+  <div *hasAnyPermission="['department:all', 'department:read']" class="table-container">
+    <div class="table-header">
+      <div class="table-title">{{ 'departments.departments' | translate }}</div>
+    </div>
+    <div class="table-body">
+      @if (isLoading()) {
+        <div>
+          <app-skeleton-table [rows]="4" [cols]="2"></app-skeleton-table>
+        </div>
+      }
+      @else {
+      <table>
+        <thead>
+          <tr>
+            <th>{{ 'common.name' | translate }}</th>
+            <th>{{ 'common.actions' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (rec of departmentsList(); track $index) {
+            <tr>
+              <td>{{ rec.name }}</td>
+              <td class="table-btns">
+                <button class="btn btn-primary btn-sm" (click)="openViewDepartmentModal(rec)">{{ 'common.view' | translate }}</button>
+                <i *hasPermission="'department:delete'" class="fa-solid fa-trash" (click)="deleteDepartment(rec.id)"></i>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      }
+    </div>
+    <app-pagination-button [lastPageReached]="lastPageReached()" [hidden]="departmentsList().length === 0" [itemsPerPage]="itemsPerPage()" [currentPage]="currentPage()" (pageChange)="loadDepartments($event)"></app-pagination-button>
+  </div>
+</div>
+<!-- Modal component -->
+<app-new-department-modal (save)="saveNewDepartment($event)"></app-new-department-modal>
+<app-view-department-modal (update)="updateDepartment($event)"></app-view-department-modal>
+<app-delete-validation-modal #deleteModal></app-delete-validation-modal>
+<app-toast></app-toast>

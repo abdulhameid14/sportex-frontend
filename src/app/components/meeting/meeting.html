@@ -1,0 +1,107 @@
+<div class="page-container">
+
+  <div class="page-header">
+    <h1 class="page-title">
+      {{ 'meetings.title' | translate }}
+    </h1>
+  </div>
+
+  <div class="filters-container">
+    <input
+      type="text"
+      class="form-control"
+      placeholder="{{ 'common.search' | translate }}"
+      (input)="onSearch($event)"
+    />
+  </div>
+
+  <div class="table-container">
+    <table class="custom-table">
+
+      <thead>
+        <tr>
+          <th>{{ 'meetings.name' | translate }}</th>
+          <th>{{ 'meetings.date' | translate }}</th>
+          <th>{{ 'common.branch' | translate }}</th>
+          <th>{{ 'common.department' | translate }}</th>
+          <th>{{ 'meetings.status' | translate }}</th>
+          <th>{{ 'meetings.progress' | translate }}</th>
+          <th>{{ 'meetings.comments' | translate }}</th>
+          <th>{{ 'common.attachments' | translate }}</th>
+          <th class="actions-col">{{ 'common.actions' | translate }}</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngIf="meetings.length === 0">
+          <td [attr.colspan]="9" class="text-center">{{ 'common.no_records_found' | translate }}</td>
+        </tr>
+
+        <tr *ngFor="let meeting of meetings; trackBy: trackById" (click)="openViewMeetingModal(meeting)">
+
+          <td>{{ meeting.title }}</td>
+
+          <td>{{ meeting.deadline | date:'mediumDate' }}</td>
+
+          <td>{{ meeting.tenantId }}</td>
+
+          <td>{{ meeting.departmentId || '-' }}</td>
+
+          <td>
+            <span
+              class="status-badge"
+              [ngClass]="getMeetingStatus(meeting)">
+              {{ getMeetingStatus(meeting) | uppercase }}
+            </span>
+          </td>
+
+          <td>
+            <div class="progress-wrapper">
+              <div class="progress-bar">
+                <div
+                  class="progress-fill"
+                  [style.width.%]="getVotePercentage(meeting)">
+                </div>
+              </div>
+              <span class="progress-text">
+                {{ getVotePercentage(meeting) }}%
+              </span>
+            </div>
+          </td>
+
+          <td>
+            <span
+              class="comments-icon"
+              [attr.title]="getComments(meeting)">
+              {{ getCommentsCount(meeting) }} 💬
+            </span>
+          </td>
+
+          <td>
+            <ng-container *ngIf="getAttachmentsCount(meeting) > 0; else noAttach">
+              <a [href]="getFirstAttachment(meeting)" target="_blank">{{ getAttachmentsCount(meeting) }} file(s)</a>
+            </ng-container>
+            <ng-template #noAttach>-</ng-template>
+          </td>
+
+          <td class="actions-col">
+            <button class="btn btn-icon" (click)="openViewMeetingModal(meeting); $event.stopPropagation()">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+
+            <button
+              class="btn btn-icon danger"
+              *hasPermission="'meeting:delete'"
+              (click)="$event.stopPropagation()">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </td>
+
+        </tr>
+      </tbody>
+
+    </table>
+  </div>
+
+  <app-view-meeting-modal (update)="updateMeeting($event)"></app-view-meeting-modal>
+</div>

@@ -1,0 +1,40 @@
+@if (isOpen()) {
+  <div class="modal-overlay" (click)="close()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <button class="close-btn" (click)="close()">×</button>
+      <div class="modal-header">
+        <h2>{{ 'modals.view_branch' | translate }}</h2>
+      </div>
+      <div class="modal-body view-mode" *ngIf="branch() && !editMode()">
+        <div class="meta-header">
+          <h1 class="main-title">{{ branch()!.name }}</h1>
+        </div>
+        <div class="form-group">
+          <label>{{ 'common.branch_details' | translate }}</label>
+          <div class="main-details">
+            <div class="detail-item">
+              <label>{{ 'common.created_at' | translate }}:</label>
+              <p>{{ branch()!.createdAt | date:'yyyy-MM-dd' }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" (click)="close()">{{ 'common.close' | translate }}</button>
+          <ng-container *hasPermission="'branch:update'">
+            <button class="btn btn-primary" (click)="enableEdit()">{{ 'common.edit' | translate }}</button>
+          </ng-container>
+        </div>
+      </div>
+      <div class="modal-body" *ngIf="branch() && editMode()">
+        <div class="form-group">
+          <label>{{ 'common.name' | translate }}</label>
+          <input [(ngModel)]="branch()!.name" />
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" (click)="cancelChanges()">{{ 'common.cancel' | translate }}</button>
+          <button class="btn btn-success" (click)="saveChanges()">{{ 'common.save' | translate }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

@@ -1,0 +1,38 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="icon-container">
+      <div class="img-sportex">
+        <p>s</p>
+      </div>
+    </div>
+    <h2>{{ 'login.welcome' | translate }}</h2>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <input type="email" formControlName="email" class="form-control custom-input" placeholder="{{ 'login.email' | translate }}"/>
+      </div>
+      <div *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.errors" class="error">
+        <div *ngIf="loginForm.get('email')?.errors?.['required']">{{ 'login.email_required' | translate }}</div>
+        <div *ngIf="loginForm.get('email')?.errors?.['email']">{{ 'login.valid_email' | translate }}</div>
+      </div>
+      <div class="form-group password-wrapper">
+        <input [type]="passwordVisible ? 'text' : 'password'" formControlName="password" class="form-control custom-input" placeholder="{{ 'login.password' | translate }}"/>
+        <i (click)="togglePasswordVisibility()" class="toggle-password" [class]="passwordVisible ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
+      </div>
+      <div *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid" class="error">
+        <p *ngIf="loginForm.get('password')?.errors?.['required']">{{ 'login.password_required' | translate }}</p>
+        <p *ngIf="loginForm.get('password')?.errors?.['minlength']">{{ 'login.password_minlength' | translate }}</p>
+        <p *ngIf="loginForm.get('password')?.errors?.['pattern']">{{ 'login.password_pattern' | translate }}</p>
+      </div>
+      <button type="submit" class="btn login-btn" [disabled]="isInvalid()">
+        @if (isLoading()) {
+          <span class="loader"></span>
+        }
+        @else {
+          {{ 'common.login' | translate }}
+        }
+      </button>
+    </form>
+    <p *ngIf="errorMessage()" class="error-message">{{ errorMessage() }}</p>
+  </div>
+</div>

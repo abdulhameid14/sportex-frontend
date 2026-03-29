@@ -1,0 +1,54 @@
+@if (isOpen()) {
+<div class="modal-overlay" (click)="close()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ 'modals.add_branch' | translate }}</h2>
+      <button class="close-btn" (click)="close()">×</button>
+    </div>
+
+    <div class="modal-body">
+      <form #branchForm="ngForm" (ngSubmit)="submit(branchForm)">
+        <div class="form-group">
+          <label>{{ 'common.name' | translate }}</label>
+          <input type="text" name="name" ngModel required placeholder="{{ 'branches.branch_name' | translate }}" />
+        </div>
+
+        <div class="form-group">
+          <label>{{ 'common.logo' | translate }}</label>
+          <div class="file-picker">
+            <label class="upload-button">
+              <input type="file" name="logo" accept="image/*" (change)="handleLogoInput($event)" />
+              {{ 'common.selectFile' | translate }}
+            </label>
+            <span class="file-name">{{ logoFile ? logoFile.name : 'No file chosen' }}</span>
+          </div>
+        </div>
+
+        <div class="form-group modules-group">
+          <label>{{ 'common.modules' | translate }}</label>
+          <p class="helper-text">{{ 'branches.select_modules' | translate }}</p>
+          <div class="module-options">
+            <label class="module-option" *ngFor="let module of availableModules">
+              <input
+                type="checkbox"
+                [checked]="isSelected(module.key)"
+                (change)="toggleModule(module.key)"
+              />
+              <span>{{ module.label }}</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="submit" class="btn btn-primary" [disabled]="branchForm.invalid || selectedModules.length === 0">
+            {{ 'common.save' | translate }}
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="close()">
+            {{ 'common.cancel' | translate }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+}

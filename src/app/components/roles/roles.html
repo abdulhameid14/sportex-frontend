@@ -1,0 +1,47 @@
+<div id="page-roles" class="page">
+  <div class="nested-page-header">
+    <h1 class="page-title">{{ 'roles.roles' | translate }}</h1>
+    <button *hasPermission="'role:create'" class="btn btn-header" (click)="openNewRoleModal()">{{ 'roles.new_role' | translate }}</button>
+  </div>
+  <div *hasPermission="'role:read'" class="table-container">
+    <div class="table-header">
+      <div class="table-title">{{ 'roles.all_roles' | translate }}</div>
+    </div>
+    <div class="table-body">
+      @if (isLoading()) {
+        <div>
+          <app-skeleton-table [rows]="4" [cols]="3"></app-skeleton-table>
+        </div>
+      }
+      @else {
+      <table>
+        <thead>
+          <tr>
+            <th>{{ 'common.name' | translate }}</th>
+            <th>{{ 'common.branch' | translate }}</th>
+            <th>{{ 'common.actions' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (role of rolesList(); track $index) {
+            <tr>
+              <td>{{ role.name }}</td>
+              <td>{{ role.tenantId }}</td>
+              <td class="table-btns">
+                <button class="btn btn-primary btn-sm" (click)="openViewRoleModal(role)">{{ 'common.view' | translate }}</button>
+                <i *hasPermission="'role:delete'" class="fa-solid fa-trash" (click)="deleteRole(role.id)"></i>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      }
+    </div>
+      <app-pagination-button [lastPageReached]="lastPageReached()" [hidden]="rolesList().length === 0" [itemsPerPage]="itemsPerPage()" [currentPage]="currentPage()" (pageChange)="loadRoles($event)"></app-pagination-button>
+  </div>
+</div>
+<!-- Modal component -->
+<app-new-role-modal (save)="saveNewRole($event)"></app-new-role-modal>
+<app-view-role-modal (update)="updateRole($event)"></app-view-role-modal>
+<app-delete-validation-modal #deleteModal></app-delete-validation-modal>
+<app-toast></app-toast>

@@ -1,0 +1,66 @@
+<div class="page" id="noti-form-page">
+  <div class="page-header">
+    <h1 class="page-title">{{ 'notification.new_notification' | translate }}</h1>
+  </div>
+
+  <form #form="ngForm" (ngSubmit)="submit(form)" class="notification-form">
+    <!-- Branch -->
+    <div class="form-group">
+      <label>{{ 'common.branch' | translate }}</label>
+      <select name="branchName" ngModel (ngModelChange)="toggleBranch($event)">
+        @for (b of branchList(); track $index) {
+        <option [ngValue]="b.name">{{ b.name }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Department -->
+    <div class="form-group">
+      <label>{{ 'common.department' | translate }}</label>
+      <select name="departmentId" ngModel (ngModelChange)="toggleDepartment($event)">
+        @for (d of departments(); track $index) {
+        <option [ngValue]="d.id">{{ d.name }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Signers -->
+    <div class="form-group signers-group">
+      <label>{{ 'common.signers' | translate }}</label>
+      <div class="signers-list">
+        <label class="signers-option" *ngFor="let s of employees()">
+          <input
+            type="checkbox"
+            class="form-check-input"
+            [value]="s"
+            (change)="toggleSigner(s, $event.target.checked)"
+          />
+          {{ s.name }}
+        </label>
+      </div>
+    </div>
+
+    <!-- Title -->
+    <div class="form-group">
+      <label>{{ 'common.name' | translate }}</label>
+      <input name="title" ngModel required type="text" />
+    </div>
+
+    <!-- Content -->
+    <div class="form-group">
+      <label>{{ 'common.message' | translate }}</label>
+      <textarea name="content" ngModel required></textarea>
+    </div>
+
+    <div class="submit-container">
+        <button type="submit" class="btn btn-primary" [disabled]="form.invalid">
+          @if (isLoading()) {
+            <span class="loader"></span>
+          }
+          @else {
+            {{ 'common.save' | translate }}
+          }
+        </button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,46 @@
+@if (isOpen()) {
+  <div class="modal-overlay" (click)="close()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ 'modals.add_recruitment' | translate }}</h2>
+        <button class="close-btn" (click)="close()">×</button>
+      </div>
+      <div class="modal-body">
+        <form #recForm="ngForm" (ngSubmit)="submit(recForm)">
+          <div class="form-group">
+            <label>{{ 'common.recruitment_details' | translate }}</label>
+            <div class="main-details">
+              <div class="details-grid">
+                <div class="form-group">
+                  <label>{{ 'common.name' | translate }}</label>
+                  <input type="text" name="applicantName" ngModel required />
+                </div>
+                <div class="form-group">
+                  <label>{{ 'common.email' | translate }}</label>
+                  <input type="email" name="applicantEmail" ngModel required email />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>{{ 'common.resume' | translate }}</label>
+            <input type="file" (change)="handleFileInput($event)" required />
+            <input type="hidden" name="resumeField" [ngModel]="resume.length > 0 ? 'uploaded' : ''" required />
+            <ul *ngIf="resume.length > 0">
+              <li *ngFor="let file of resume; let i = index">
+                {{ file.name }}
+                <button type="button" (click)="removeResume()">×</button>
+              </li>
+            </ul>
+          </div>
+
+          <div class="modal-actions">
+            <button type="submit" class="btn btn-primary" [disabled]="recForm.invalid">{{ 'common.save' | translate }}</button>
+            <button type="button" class="btn btn-secondary" (click)="close()">{{ 'common.cancel' | translate }}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+}

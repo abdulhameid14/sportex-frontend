@@ -1,0 +1,251 @@
+@if (isOpen()) {
+  <div class="modal-overlay" (click)="close()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <button class="close-btn" (click)="close()">×</button>
+      <div class="modal-header">
+        <h2>{{ 'modals.view_recruitment' | translate }}</h2>
+      </div>
+
+    <div class="modal-body view-mode" *ngIf="recruitment() && !editMode()">
+      <div class="meta-header">
+        <h1 class="main-title">{{ recruitment()!.position }}</h1>
+        <div class="view-badges">
+          <span class="badge priority {{ recruitment()!.status }}">{{ 'status.' + recruitment()!.status | translate }}</span>
+          <span *ngIf="recruitment()!.active === true" class="badge status">{{ 'status.active' | translate }}</span>
+          <span *ngIf="recruitment()!.active === false" class="badge status">{{ 'status.inactive' | translate }}</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>{{ 'common.recruitment_details' | translate }}</label>
+        <div class="main-details">
+          <div class="details-grid">
+            <div class="detail-item">
+              <label>{{ 'common.branch' | translate }}</label>
+              <p>{{ recruitment()!.tenantId }}</p>
+            </div>
+            <div class="detail-item">
+              <label>{{ 'common.department' | translate }}</label>
+              <p>{{ recruitment()!.department?.name }}</p>
+            </div>
+            <div class="detail-item">
+              <label>{{ 'common.created_by' | translate }}</label>
+              <p>{{ recruitment()!.createdBy?.email }}</p>
+            </div>
+            <div class="detail-item">
+              <label>{{ 'common.created_at' | translate }}</label>
+              <p>{{ recruitment()!.createdAt | date: 'yyyy-MM-dd' }}</p>
+            </div>
+          </div>
+          <div>
+            <label>{{ 'common.description' | translate }}</label>
+            <div class="description-box">{{ recruitment()!.description }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="recruitment()!.requirements && recruitment()!.requirements!.length > 0">
+        <label>{{ 'common.requirements_details' | translate }}</label>
+        <div class="main-details">
+          <ng-container  *ngFor="let requirement of recruitment()!.requirements; let last = last">
+            <div class="details-grid">
+              <div class="detail-item">
+                <label>{{ 'common.requirement_title' | translate }}</label>
+                <p>{{ requirement.title }}</p>
+              </div>
+              <div>
+                <label>{{ 'common.requirement_description' | translate }}</label>
+                <p class="description-box">{{ requirement.description }}</p>
+              </div>
+              <div class="detail-item">
+                <label>{{ 'common.mandatory' | translate }}</label>
+                <p>{{ requirement.mandatory ? ( 'common.yes' | translate ) : ( 'common.no' | translate ) }}</p>
+              </div>
+            </div>
+            <hr *ngIf="!last" />
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="recruitment()!.applications && recruitment()!.applications!.length > 0">
+        <label>{{ 'common.applications_details' | translate }}</label>
+        <div class="main-details">
+          <ng-container  *ngFor="let app of recruitment()!.applications; let last = last">
+            <div class="details-grid">
+              <div class="detail-item">
+                <label>{{ 'common.application_name' | translate }}</label>
+                <p>{{ app.applicantName }}</p>
+              </div>
+              <div>
+                <label>{{ 'common.application_email' | translate }}</label>
+                <p class="description-box">{{ app.applicantEmail }}</p>
+              </div>
+              <div class="detail-item">
+                <label>{{ 'common.resume' | translate }}</label>
+                <div class="attachments">
+                  <div class="attachment">
+                    <div class="img-attach" *ngIf="app.resume.endsWith('.jpg') || app.resume.endsWith('.jpeg') || app.resume.endsWith('.png') || app.resume.endsWith('.gif')">
+                      <a [href]="'https://api.kayanatdashboard.com/api/' + app.resume.trim()" target="_blank" class="attachment-link">
+                        <img [src]="'https://api.kayanatdashboard.com/api/' + app.resume.trim()" alt="Attachment" class="attachment-img"/>
+                      </a>
+                    </div>
+                    <div class="file-attach" *ngIf="!(app.resume.endsWith('.jpg') || app.resume.endsWith('.jpeg') || app.resume.endsWith('.png') || app.resume.endsWith('.gif'))">
+                      <a [href]="'https://api.kayanatdashboard.com/api/' + app.resume.trim()" target="_blank" class="attachment-link">{{ app.resume.split('/').pop()?.split('_')!.slice(1).join('_') }}</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr *ngIf="!last" />
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="recruitment()!.attachments">
+        <div class="main-details">
+          <div class="form-group">
+            <label>{{ 'common.attachments_details' | translate }}</label>
+            <div class="main-details">
+              <div class="form-group" *ngIf="recruitment()!.attachments">
+                <label>{{ 'common.attachments' | translate }}</label>
+                <div class="attachments">
+                  <div class="attachment" *ngFor="let file of currentAttachments(); let i = index">
+                    <div class="img-attach" *ngIf="file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png') || file.endsWith('.gif')">
+                      <a [href]="'https://api.kayanatdashboard.com/api/' + file.trim()" target="_blank" class="attachment-link">
+                        <img [src]="'https://api.kayanatdashboard.com/api/' + file.trim()" alt="Attachment" class="attachment-img"/>
+                      </a>
+                    </div>
+                    <div class="file-attach" *ngIf="!(file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png') || file.endsWith('.gif'))">
+                      <a [href]="'https://api.kayanatdashboard.com/api/' + file.trim()" target="_blank" class="attachment-link">{{ file.split('/').pop()?.split('_')!.slice(1).join('_') }}</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-secondary" (click)="close()">{{ 'common.close' | translate }}</button>
+        <ng-container *hasPermission="'recruitment:update'">
+          <button class="btn btn-primary" (click)="enableEdit()">{{ 'common.edit' | translate }}</button>
+        </ng-container>
+      </div>
+    </div>
+
+
+      <div class="modal-body" *ngIf="recruitment() && editMode()">
+
+      <div class="form-group">
+        <label>{{ 'common.recruitment_details' | translate }}</label>
+        <div class="main-details">
+          <div class="details-grid">
+            <div class="form-group">
+              <label>{{ 'common.position' | translate }}</label>
+              <input [(ngModel)]="updatedPosition" />
+            </div>
+            <div class="form-group">
+              <label>{{ 'common.branch' | translate }}</label>
+              <select name="branch" [(ngModel)]="updatedBranch" required>
+                @for (d of branchs(); track $index) {
+                  <option [ngValue]="d.name">{{ d.name }}</option>
+                }
+              </select>
+            </div>
+            <div class="form-group">
+              <label>{{ 'common.department' | translate }}</label>
+              <select name="departmentId" [(ngModel)]="updatedDepartmentId" required>
+                @for (d of departments(); track $index) {
+                  <option [ngValue]="d.id">{{ d.name }}</option>
+                }
+              </select>
+            </div>
+            <div class="form-group">
+              <label>{{ 'common.status' | translate }}</label>
+              <select name="status" [(ngModel)]="updatedStatus" ngModel required>
+                @for (s of statuses(); track $index) {
+                  <option [ngValue]="s">{{ s.name }}</option>
+                }
+              </select>
+            </div>
+            <div class="form-group">
+              <label>{{ 'common.active' | translate }}</label>
+              <input class="form-check-input" type="checkbox" [(ngModel)]="updatedActive" />
+              {{ updatedActive ? ( 'common.yes' | translate ) : ( 'common.no' | translate ) }}
+            </div>
+          </div>
+          <div class="form-group">
+            <label>{{ 'common.description' | translate }}</label>
+            <textarea [(ngModel)]="updatedDescription"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>{{ 'common.requirements_details' | translate }}</label>
+        <div class="main-details">
+          <div class="form-group">
+            <label>{{ 'common.requirements' | translate }}</label>
+            <div class="requirments-item" *ngFor="let req of requirments(); let i = index; let last = last">
+              <div class="form-group">
+                <label>{{ 'common.title' | translate }}</label>
+                <input type="text" [(ngModel)]="req.title" name="requirmentTitle{{i}}" required />
+              </div>
+              <div class="form-group">
+                <label class="mandatory-option">
+                  <input type="checkbox" class="form-check-input" [(ngModel)]="req.mandatory" name="mandatory{{i}}" />
+                  {{ 'common.mandatory' | translate }}
+                </label>
+              </div>
+              <div class="form-group">
+                <label>{{ 'common.description' | translate }}</label>
+                <textarea [(ngModel)]="req.description" name="requirmentsDesc{{i}}" rows="2" required></textarea>
+              </div>
+              <button class="btn delete-btn btn-sm" [disabled]="requirments().length <= 1" (click)="removeRequirment(i)"><i class="fa-solid fa-trash"></i></button>
+              <hr *ngIf="!last" />
+            </div>
+            <button type="button" class="btn btn-success btn-sm" (click)="addRequirment()">{{ 'modals.add' | translate }}</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>{{ 'common.attachments_details' | translate }}</label>
+        <div class="main-details">
+          <div class="form-group">
+            <input type="file" multiple (change)="handleAttachmentInput($event)" />
+            <ul *ngIf="newAttachments.length > 0">
+              <li *ngFor="let file of newAttachments; let i = index">
+                {{ file.name }}
+                <button type="button" (click)="removeNewAttachment(i)">×</button>
+              </li>
+            </ul>
+          </div>
+          <div class="form-group">
+            <div class="attachments">
+              <div class="attachment" *ngFor="let file of currentAttachments(); let i = index">
+                <div class="img-attach" *ngIf="file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png') || file.endsWith('.gif')">
+                  <a [href]="'https://api.kayanatdashboard.com/api/' + file.trim()" target="_blank" class="attachment-link">
+                    <img [src]="'https://api.kayanatdashboard.com/api/' + file.trim()" alt="Attachment" class="attachment-img"/>
+                  </a>
+                  <button type="button" (click)="removeCurrentAttachment(i)">×</button>
+                </div>
+                <div class="file-attach" *ngIf="!(file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png') || file.endsWith('.gif'))">
+                  <a [href]="'https://api.kayanatdashboard.com/api/' + file.trim()" target="_blank" class="attachment-link">{{ file.split('/').pop()?.split('_')!.slice(1).join('_') }}</a>
+                  <button type="button" (click)="removeCurrentAttachment(i)">×</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+        <div class="modal-actions">
+          <button class="btn btn-secondary" (click)="cancelChanges()">{{ 'common.cancel' | translate }}</button>
+          <button class="btn btn-success" (click)="saveChanges()">{{ 'common.save' | translate }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

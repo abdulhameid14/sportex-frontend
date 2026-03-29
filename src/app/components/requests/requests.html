@@ -1,0 +1,143 @@
+<div id="page-requests" class="page">
+  <div class="page-header">
+    <h1 class="page-title">{{ 'requests.requests' | translate }}</h1>
+    <div class="page-actions">
+      <button
+        *hasPermission="'request:create'"
+        class="btn btn-header"
+        (click)="openNewRequestModal()"
+      >
+        {{ 'requests.new_request' | translate }}
+      </button>
+      <button
+        *hasPermission="'request:create'"
+        class="btn btn-header"
+        (click)="openNewRequestTypeModal()"
+      >
+        {{ 'requests.new_request_type' | translate }}
+      </button>
+    </div>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab" [class.active]="currentTab() === 'all'" (click)="changeTab('all')">
+      {{ 'requests.all_requests' | translate }}
+    </button>
+    <button
+      class="nav-tab"
+      [class.active]="currentTab() === 'requestTypes'"
+      (click)="changeTab('requestTypes')"
+    >
+      {{ 'requests.request_types' | translate }}
+    </button>
+  </div>
+  <div *hasAnyPermission="['request:read', 'request:all']" class="table-container">
+    <div class="table-header">
+      <div class="table-title" [hidden]="currentTab() != 'all'">
+        {{ 'requests.all_requests' | translate }}
+      </div>
+      <div class="table-title" [hidden]="currentTab() != 'requestTypes'">
+        {{ 'requests.request_types' | translate }}
+      </div>
+      <div class="table-filters">
+        <select
+          class="filter-select"
+          [hidden]="currentTab() != 'all'"
+          (change)="statusFilter.set($any($event.target).value); loadRequests(1)">
+          <option value="ALL">{{ 'status.all_status' | translate }}</option>
+          <option value="PENDING">{{ 'status.pending' | translate }}</option>
+          <option value="APPROVED">{{ 'status.approved' | translate }}</option>
+          <option value="REJECTED">{{ 'status.rejected' | translate }}</option>
+        </select>
+      </div>
+    </div>
+    <div class="table-body">
+      @if (isLoading()) {
+        <div>
+          <app-skeleton-table [rows]="4" [cols]="6"></app-skeleton-table>
+        </div>
+      }
+      @else {
+      <table>
+        <thead>
+          <tr [hidden]="currentTab() != 'all'">
+            <th>{{ 'common.title' | translate }}</th>
+            <th>{{ 'common.type' | translate }}</th>
+            <th>{{ 'common.created_by' | translate }}</th>
+            <th>{{ 'common.department' | translate }}</th>
+            <th>{{ 'common.date' | translate }}</th>
+            <th>{{ 'common.status' | translate }}</th>
+            <th>{{ 'common.actions' | translate }}</th>
+          </tr>
+          <tr [hidden]="currentTab() != 'requestTypes'">
+            <th>{{ 'common.name' | translate }}</th>
+            <th>{{ 'common.date' | translate }}</th>
+            <th>{{ 'common.actions' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody [hidden]="currentTab() != 'all'">
+          @for (req of requestList(); track $index) {
+          <tr>
+            <td>{{ req.title }}</td>
+            <td>{{ req.type?.name }}</td>
+            <td>{{ req.requesterEmployee?.name }}</td>
+            <td>{{ req.department?.name }}</td>
+            <td>{{ req.createdAt | date : 'dd/MM/yyyy' }}</td>
+            <td>
+              @if (req.status == requestStatus.APPROVED) {
+              <span class="status-badge status-approved">{{ 'status.approved' | translate }}</span>
+              } @else if (req.status == requestStatus.PENDING) {
+              <span class="status-badge status-pending">{{ 'status.pending' | translate }}</span>
+              } @else {
+              <span class="status-badge status-rejected">{{ 'status.rejected' | translate }}</span>
+              }
+            </td>
+            <td class="table-btns">
+              <button
+                class="btn btn-primary btn-sm"
+                (click)="openViewRequestModal(req)"
+              >
+                {{ 'common.view' | translate }}
+              </button>
+              <i
+                *hasPermission="'request:delete'"
+                class="fa-solid fa-trash"
+                (click)="deleteRequest(req.id)"
+              ></i>
+            </td>
+          </tr>
+          }
+        </tbody>
+        <tbody [hidden]="currentTab() != 'requestTypes'">
+          @for (reqType of requestTypeList(); track $index) {
+          <tr>
+            <td>{{ reqType.name }}</td>
+            <td>{{ reqType.createdAt | date : 'dd/MM/yyyy' }}</td>
+            <td class="table-btns">
+              <button
+                class="btn btn-primary btn-sm"
+                (click)="openViewRequestTypeModal(reqType)"
+              >
+                {{ 'common.view' | translate }}
+              </button>
+              <i
+                *hasPermission="'request:delete'"
+                class="fa-solid fa-trash"
+                (click)="deleteRequestType(reqType.id)"
+              ></i>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+      }
+    </div>
+      <app-pagination-button [hidden]="(requestList().length === 0) && (requestTypeList().length === 0)" [itemsPerPage]="itemsPerPage()" [currentPage]="currentPage()" [lastPageReached]="lastPageReached()" (pageChange)="loadRequests($event)"></app-pagination-button>
+  </div>
+</div>
+<!-- Modal component -->
+<app-new-request-modal (save)="saveNewRequest($event)"></app-new-request-modal>
+<app-view-request-modal (update)="updateRequest($event)"></app-view-request-modal>
+<app-view-request-type-modal (update)="updateRequestType($event)"></app-view-request-type-modal>
+<app-new-request-type-modal (save)="saveNewRequestType($event)"></app-new-request-type-modal>
+<app-delete-validation-modal #deleteModal></app-delete-validation-modal>
+<app-toast></app-toast>

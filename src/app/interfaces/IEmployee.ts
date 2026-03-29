@@ -1,0 +1,41 @@
+import { IConversationParticipant } from "./IConversation";
+import { IDepartment } from "./IDepartment";
+import { IMessage } from "./IMessage";
+import { IProject } from "./IProject";
+import { IReport } from "./IReport";
+import { IRequest, IRequestSigners } from "./IRequest";
+import { ITask } from "./ITask";
+import { IUser } from "./IUser";
+import { IUserPerformance } from "./IUserPerformance";
+
+export interface IEmployee {
+  id?: string;
+  tenantId?: string;
+  name: string;
+  photo?: string;
+  phone?: string;
+  position?: string;
+  salary: number;
+  vacations: number;
+  user?: IUser;
+  userId: string;
+  department?: IDepartment;
+  departmentId: string;
+  active: boolean;
+  terminatedAt?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
+  deletedAt?: Date;
+  requests?: IRequest[];
+  assignedRequests?: IRequest[];
+  createdTasks?: ITask[];
+  assignedTasks?: ITask[];
+  projectManagers?: IProject[];
+  projectWorkers?: IProject[];
+  userPerformance?: IUserPerformance[];
+  message?: IMessage[];
+  conversationParticipant?: IConversationParticipant[];
+  requestTypeSigners?: IRequestSigners[];
+  reports?: IReport[];
+  requestSigners?: IRequestSigners[];
+}

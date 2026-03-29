@@ -1,0 +1,70 @@
+<div id="page-hr" class="page">
+  <div class="page-header">
+    <h1 class="page-title">{{ 'hr.human_resources' | translate }}</h1>
+    <div class="page-actions">
+    </div>
+  </div>
+  <div *hasAnyPermission="['employee:read', 'employee:all']" class="table-container">
+    <div class="table-header">
+      <div class="table-title">{{ 'hr.employees' | translate }}</div>
+      <div class="table-filters">
+        <select class="filter-select" (change)="departmentFilter.set($any($event.target).value); loadEmployees(1)">
+          <option value="ALL">{{ 'common.all_departments' | translate }}</option>
+          @for (dep of departmentList(); track $index) {
+            <option value="{{ dep.id }}">{{ dep.name }}</option>
+          }
+        </select>
+      </div>
+    </div>
+    <div class="table-body">
+      @if (isLoading()) {
+        <div>
+          <app-skeleton-table [rows]="4" [cols]="7"></app-skeleton-table>
+        </div>
+      }
+      @else {
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>{{ 'common.name' | translate }}</th>
+            <th>{{ 'common.department' | translate }}</th>
+            <th>{{ 'common.position' | translate }}</th>
+            <th>{{ 'common.vacations' | translate }}</th>
+            <th>{{ 'common.status' | translate }}</th>
+            <th>{{ 'common.actions' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (emp of employeeList(); track $index) {
+            <tr>
+              <td class="employee-info"><img class="employee-avatar" [src]="emp.photo || 'logo/avatar.png'" alt="avatar" /></td>
+              <td>{{ emp.name }}</td>
+              <td> {{ emp.department?.name }}</td>
+              <td>{{ emp.position }}</td>
+              <td>{{ emp.vacations }}</td>
+              <td>
+                @if (emp.active) {
+                  <span class="status-badge status-approved">{{ 'common.active' | translate }}</span>
+                } @else {
+                  <span class="status-badge status-rejected">{{ 'common.inactive' | translate }}</span>
+                }
+              <td class="table-btns">
+                <button class="btn btn-primary btn-sm" (click)="openViewEmployeeModal(emp)">{{ 'common.view' | translate }}</button>
+                <i *hasPermission="'employee:update'" class="fa-solid fa-chart-line" (click)="openEmpPerformanceModal(emp)"></i>
+                <i *hasPermission="'employee:delete'" class="fa-solid fa-trash" (click)="deleteEmployee(emp.id)"></i>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      }
+    </div>
+      <app-pagination-button [lastPageReached]="lastPageReached()" [hidden]="employeeList().length === 0" [itemsPerPage]="itemsPerPage()" [currentPage]="currentPage()" (pageChange)="loadEmployees($event)"></app-pagination-button>
+  </div>
+</div>
+<!-- Modal component -->
+<app-delete-validation-modal #deleteModal></app-delete-validation-modal>
+<app-view-employee-modal (update)="updateEmployee($event)"></app-view-employee-modal>
+<app-emp-performance-modal #performanceModal></app-emp-performance-modal>
+<app-toast></app-toast>

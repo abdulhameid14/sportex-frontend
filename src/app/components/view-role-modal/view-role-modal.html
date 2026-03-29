@@ -1,0 +1,73 @@
+@if (isOpen()) {
+  <div class="modal-overlay" (click)="close()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <button class="close-btn" (click)="close()">×</button>
+      <div class="modal-header">
+        <h2>{{ 'modals.view_role' | translate }}</h2>
+      </div>
+
+      <div class="modal-body view-mode" *ngIf="role() && !editMode()">
+        <div class="meta-header">
+          <h1 class="main-title">{{ role()!.name }}</h1>
+        </div>
+
+        <div class="form-group" *ngIf="role()!.permissions">
+          <label>{{ 'common.role_details' | translate }}</label>
+          <div class="main-details">
+            <div *hasPermission="'permission:read'" class="form-group permissions-group">
+              <label>{{ 'modals.permissions' | translate }}</label>
+              <div class="permissions-list">
+                <label class="permissions-option" *ngFor="let perm of role()!.permissions">
+                  - {{ perm.permission.description }}
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn btn-secondary" *ngIf="!editMode()" (click)="close()">{{ 'common.close' | translate }}</button>
+          <ng-container *hasPermission="'role:update'">
+            <button class="btn btn-primary" *ngIf="!editMode()" (click)="enableEdit()">{{ 'common.edit' | translate }}</button>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="modal-body" *ngIf="role() && editMode()">
+        <div *hasPermission="'permission:read'" class="form-group permissions-group">
+          <label>{{ 'modals.permissions' | translate }}</label>
+          <div class="permissions-list">
+            <!-- Admin permission at top -->
+            <label class="permissions-option" *ngIf="adminPermission()">
+              <input
+                type="checkbox" class="form-check-input"
+                [value]="adminPermission()!.id"
+                [checked]="isPermissionSelected(adminPermission()!)"
+                (change)="onPermissionToggle($event, adminPermission()!)"
+              />
+              Admin ({{ adminPermission()!.description }})
+            </label>
+            <!-- Other permissions grouped by module -->
+            <ng-container *ngFor="let module of Object.keys(groupedPermissions())">
+              <div class="module-group" *ngIf="module !== 'admin'">
+                <h4 class="module-title">{{ module | titlecase }}</h4>
+                <label class="permissions-option" *ngFor="let perm of groupedPermissions()[module]">
+                  <input
+                    type="checkbox" class="form-check-input" [value]="perm.id" [checked]="isPermissionSelected(perm)" [disabled]="isCheckboxDisabled(perm)" (change)="onPermissionToggle($event, perm)"/>
+                  {{ perm.description }}
+                </label>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn btn-secondary" (click)="cancelChanges()">{{ 'common.cancel' | translate }}</button>
+          <button class="btn btn-success" (click)="saveChanges()">{{ 'common.save' | translate }}</button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+}

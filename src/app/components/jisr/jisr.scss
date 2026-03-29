@@ -1,0 +1,122 @@
+/* Page Header */
+.page-header {
+background:
+  radial-gradient(circle at 20% 30%, #0c59be 0%, transparent 55%),
+  radial-gradient(circle at 50% 80%, #051283 0%, transparent 55%),
+  radial-gradient(circle at 80% 20%, #0c59be 0%, transparent 55%),
+  #f8f3ec;
+
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  @media (max-width: 600px) {
+    padding: 20px 10px;
+  }
+}
+
+.page-title {
+  font-size: 28px;
+  font-weight: bold;
+  color: #ffffff;
+  @media (max-width: 550px) {
+    font-size: 20px;
+    font-weight: 700;
+  }
+  @media (max-width: 450px) {
+    font-size: 17px;
+    font-weight: 700;
+  }
+}
+
+.page-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.page-actions button{
+  @media (max-width: 550px) {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+  @media (max-width: 380px) {
+    padding: 5px 8px;
+    font-size: 9px;
+  }
+}
+
+/* Navigation Tabs */
+.nav-tabs {
+  display: flex;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 20px;
+  max-width: 90vw;
+  overflow-x: auto;
+}
+
+.nav-tab {
+  padding: 12px 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  color: #555;
+  font-size: 15px;
+  font-weight: 600;
+  transition: all 0.3s;
+  white-space: nowrap;
+  @media (max-width: 550px) {
+    padding: 10px 15px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+}
+
+.nav-tab.active,
+.nav-tab:hover {
+  color: #3498db;
+  border-bottom-color: #3498db;
+}
+
+
+
+/* Cards */
+.card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.card-header {
+  background: #f8f9fa;
+  padding: 15px 20px;
+  border-bottom: 1px solid #eee;
+  font-weight: bold;
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+/* attendance Page */
+.attendance-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+app-pagination-button{
+  margin: 2px 0px;
+}

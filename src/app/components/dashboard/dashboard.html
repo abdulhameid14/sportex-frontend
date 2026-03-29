@@ -1,0 +1,247 @@
+<app-hero></app-hero>
+
+<div id="page-dashboard" class="page">
+  <div class="page-header">
+    <h1 class="page-title">{{ 'Dashboard' | translate }}</h1>
+  </div>
+
+  <div class="cards-grid">
+
+    <div class="card" *hasAnyPermission="['task:read', 'task:all', 'task:update', 'task:delete']" [hidden]="!isModuleVisible('tasks')" routerLink="/tasks">
+      <div class="icon"><i class="fa-solid fa-list-check"></i></div>
+      <div class="content">
+        <h3>{{ 'tasks.daily_tasks' | translate }}</h3>
+        <p>{{ 'tasks.daily_tasks' | translate }}</p>
+      </div>
+    </div>
+
+    <div class="card" *hasAnyPermission="['request:read', 'request:all', 'request:update', 'request:delete']" [hidden]="!isModuleVisible('requests')" routerLink="/requests">
+      <div class="icon"><i class="fa-solid fa-hand-paper"></i></div>
+      <div class="content">
+        <h3>{{ 'requests.requests' | translate }}</h3>
+        <p>{{ 'requests.requests' | translate }}</p>
+      </div>
+    </div>
+
+    <div class="card" routerLink="/requests" [hidden]="!isModuleVisible('request_types')">
+      <div class="icon"><i class="fa-solid fa-list"></i></div>
+      <div class="content">
+        <h3>Request Types</h3>
+        <p>Manage available request types</p>
+      </div>
+    </div>
+
+    <div class="card" *hasAnyPermission="['report:read', 'report:all', 'report:update', 'report:delete']" [hidden]="!isModuleVisible('reports')" routerLink="/reports">
+      <div class="icon"><i class="fa-solid fa-file"></i></div>
+      <div class="content">
+        <h3>{{ 'reports.reports' | translate }}</h3>
+        <p>{{ 'reports.reports' | translate }}</p>
+      </div>
+    </div>
+
+    <div class="card" routerLink="/esign" [hidden]="!isModuleVisible('esign')">
+      <div class="icon"><i class="fa-solid fa-file-pen"></i></div>
+      <div class="content">
+        <h3>{{ 'esignature.e_signature' | translate }}</h3>
+        <p>{{ 'esignature.e_signature' | translate }}</p>
+      </div>
+    </div>
+
+    <div class="card" routerLink="/chat" [hidden]="!isModuleVisible('chat')">
+      <div class="icon"><i class="fa-solid fa-comments"></i></div>
+      <div class="content">
+        <h3>{{ 'chat.chats' | translate }}</h3>
+        <p>{{ 'chat.chats' | translate }}</p>
+      </div>
+    </div>
+
+    <div class="card" *hasAnyPermission="['employee:read', 'employee:all', 'employee:update', 'employee:delete']" [hidden]="!isModuleVisible('hr')" routerLink="/hr">
+      <div class="icon"><i class="fa-solid fa-users"></i></div>
+      <div class="content">
+        <h3>{{ 'hr.human_resources' | translate }}</h3>
+        <p>{{ 'hr.human_resources' | translate }}</p>
+      </div>
+    </div>
+
+    <div class="card" routerLink="/hr" [hidden]="!isModuleVisible('players')">
+      <div class="icon"><i class="fa-solid fa-user"></i></div>
+      <div class="content">
+        <h3>Players</h3>
+        <p>Manage all players</p>
+      </div>
+    </div>
+
+    <div class="card" routerLink="/hr" [hidden]="!isModuleVisible('players_performance')">
+      <div class="icon"><i class="fa-solid fa-chart-line"></i></div>
+      <div class="content">
+        <h3>Player's Performance</h3>
+        <p>Track employee performance</p>
+      </div>
+    </div>
+
+    <div class="card" routerLink="/jisr" [hidden]="!isModuleVisible('jisr')">
+      <div class="icon"><i class="fa-solid fa-calendar"></i></div>
+      <div class="content">
+        <h3>{{ 'common.jisr' | translate }}</h3>
+        <p>{{ 'common.jisr' | translate }}</p>
+      </div>
+    </div>
+
+    <div class="card" *hasAnyPermission="['report:read', 'report:all', 'report:update', 'report:delete']" [hidden]="!isModuleVisible('finance')" routerLink="/finance">
+      <div class="icon"><i class="fa-solid fa-sack-dollar"></i></div>
+      <div class="content">
+        <h3>{{ 'finance.finance' | translate }}</h3>
+        <p>{{ 'finance.finance' | translate }}</p>
+      </div>
+    </div>
+
+    <div class="card" *hasAnyPermission="['strategy:read', 'strategy:all', 'strategy:update', 'strategy:delete']" [hidden]="!isModuleVisible('strategy')" routerLink="/strategy">
+      <div class="icon"><i class="fa-solid fa-bullseye"></i></div>
+      <div class="content">
+        <h3>{{ 'strategy.strategies' | translate }}</h3>
+        <p>{{ 'strategy.strategies' | translate }}</p>
+      </div>
+    </div>
+
+    <div class="card" *hasAnyPermission="['project:read', 'project:all', 'project:update', 'project:delete']" [hidden]="!isModuleVisible('projects')" routerLink="/projects">
+      <div class="icon"><i class="fa-solid fa-diagram-project"></i></div>
+      <div class="content">
+        <h3>{{ 'projects.projects' | translate }}</h3>
+        <p>{{ 'projects.projects' | translate }}</p>
+      </div>
+    </div>
+
+    <div class="card" *hasAnyPermission="['tenant:manage']" [hidden]="!isModuleVisible('branches')" routerLink="/branches">
+      <div class="icon"><i class="fa-solid fa-location-dot"></i></div>
+      <div class="content">
+        <h3>{{ 'branches.branches' | translate }}</h3>
+        <p>{{ 'branches.branches' | translate }}</p>
+      </div>
+    </div>
+
+    <div class="card" *hasAnyPermission="['department:read', 'department:all', 'department:update', 'department:delete']" [hidden]="!isModuleVisible('departments')" routerLink="/departments">
+      <div class="icon"><i class="fa-solid fa-building"></i></div>
+      <div class="content">
+        <h3>{{ 'departments.departments' | translate }}</h3>
+        <p>{{ 'departments.departments' | translate }}</p>
+      </div>
+    </div>
+
+    <div class="card" *hasAnyPermission="['recruitment:read', 'recruitment:all', 'recruitment:update', 'recruitment:delete']" [hidden]="!isModuleVisible('recruitment')" routerLink="/recruitment">
+      <div class="icon"><i class="fa-solid fa-user-plus"></i></div>
+      <div class="content">
+        <h3>{{ 'recruitment.recruitments' | translate }}</h3>
+        <p>{{ 'recruitment.recruitments' | translate }}</p>
+      </div>
+    </div>
+
+    <div class="card" *hasAnyPermission="['announcement:read', 'announcement:all', 'announcement:update', 'announcement:delete']" [hidden]="!isModuleVisible('announcement')" routerLink="/announcement">
+      <div class="icon"><i class="fa-solid fa-bullhorn"></i></div>
+      <div class="content">
+        <h3>{{ 'announcement.announcements' | translate }}</h3>
+        <p>{{ 'announcement.announcements' | translate }}</p>
+      </div>
+    </div>
+
+    <div class="card" routerLink="/notifications" [hidden]="!isModuleVisible('send_notification')">
+      <div class="icon"><i class="fa-solid fa-paper-plane"></i></div>
+      <div class="content">
+        <h3>Send Notification</h3>
+        <p>Send alerts and updates</p>
+      </div>
+    </div>
+
+    <div class="card" routerLink="/notifications" [hidden]="!isModuleVisible('notification')">
+      <div class="icon"><i class="fa-solid fa-bell"></i></div>
+      <div class="content">
+        <h3>Notification</h3>
+        <p>View notifications</p>
+      </div>
+    </div>
+
+    <div class="card" *hasPermission="'notification:send'" [hidden]="!isModuleVisible('notifications')" routerLink="/notifications">
+      <div class="icon"><i class="fa-solid fa-bell"></i></div>
+      <div class="content">
+        <h3>{{ 'notification.notifications' | translate }}</h3>
+        <p>{{ 'notification.notifications' | translate }}</p>
+      </div>
+    </div>
+
+    <div class="card" *hasAnyPermission="['external-report:read', 'external-report:all', 'external-report:update', 'external-report:delete']" [hidden]="!isModuleVisible('external_reports')" routerLink="/external-reports">
+      <div class="icon"><i class="fa-solid fa-file-export"></i></div>
+      <div class="content">
+        <h3>{{ 'externalReports.external_reports' | translate }}</h3>
+        <p>{{ 'externalReports.external_reports' | translate }}</p>
+      </div>
+    </div>
+
+    <div class="card" routerLink="/settings" [hidden]="!isModuleVisible('settings')">
+      <div class="icon"><i class="fa-solid fa-gear"></i></div>
+      <div class="content">
+        <h3>{{ 'settings.settings' | translate }}</h3>
+        <p>{{ 'settings.settings' | translate }}</p>
+      </div>
+    </div>
+
+    <div class="card" [routerLink]="['/settings']" [queryParams]="{ tab: 'roles_permissions' }" [hidden]="!isModuleVisible('roles')">
+      <div class="icon"><i class="fa-solid fa-user-shield"></i></div>
+      <div class="content">
+        <h3>Roles</h3>
+        <p>Manage role permissions</p>
+      </div>
+    </div>
+
+    <div class="card" [routerLink]="['/settings']" [queryParams]="{ tab: 'user_profile' }" [hidden]="!isModuleVisible('my_profile')">
+      <div class="icon"><i class="fa-solid fa-id-card"></i></div>
+      <div class="content">
+        <h3>My Profile</h3>
+        <p>Update your personal info</p>
+      </div>
+    </div>
+
+    <div class="card" [routerLink]="['/esign']" [queryParams]="{ tab: 'archives' }" [hidden]="!isModuleVisible('my_archives')">
+      <div class="icon"><i class="fa-solid fa-archive"></i></div>
+      <div class="content">
+        <h3>My Archives</h3>
+        <p>View your archived documents</p>
+      </div>
+    </div>
+
+    <div class="card" [routerLink]="['/esign']" [queryParams]="{ tab: 'archives' }" [hidden]="!isModuleVisible('all_archives')">
+      <div class="icon"><i class="fa-solid fa-boxes-stacked"></i></div>
+      <div class="content">
+        <h3>All Archives</h3>
+        <p>View all archived documents</p>
+      </div>
+    </div>
+
+    <div class="card" [routerLink]="['/esign']" [queryParams]="{ tab: 'archives' }" [hidden]="!isModuleVisible('archived_data')">
+      <div class="icon"><i class="fa-solid fa-database"></i></div>
+      <div class="content">
+        <h3>Archived Data</h3>
+        <p>Manage archived files</p>
+      </div>
+    </div>
+
+    <div class="card" routerLink="/meeting" [hidden]="!isModuleVisible('meeting')">
+      <div class="icon"><i class="fa-solid fa-gear"></i></div>
+      <div class="content">
+        <h3>Meetings</h3>
+        <p>Manage branch meetings</p>
+      </div>
+    </div>
+
+<!-- ================= CUSTOM TABLES FROM API ================= -->
+    <ng-container *ngIf="customTables().length > 0">
+      <div class="card" *ngFor="let table of customTables()" [routerLink]="'/custom-table/' + table.id">
+        <div class="icon"><i class="fa-solid fa-table"></i></div>
+        <div class="content">
+          <h3>{{ table.title }}</h3>
+          <p>{{ table.description }}</p>
+        </div>
+      </div>
+    </ng-container>
+
+
+  </div>
+</div>

@@ -1,0 +1,235 @@
+<div class="modal-overlay" *ngIf="isOpen()" (click)="close()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="close()">×</button>
+    <div class="modal-header">
+      <h2>{{ 'modals.view_strategy' | translate }}</h2>
+    </div>
+
+
+    <div class="modal-body view-mode" *ngIf="strategy() && !editMode()">
+      <div class="meta-header">
+        <h1 class="main-title">{{ strategy()!.title }}</h1>
+        <div class="view-badges">
+          <span *ngIf="strategy()!.active === true" class="badge status">{{ 'status.active' | translate }}</span>
+          <span *ngIf="strategy()!.active === false" class="badge status">{{ 'status.inactive' | translate }}</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>{{ 'common.strategy_details' | translate }}</label>
+        <div class="main-details">
+          <div class="details-grid">
+            <div class="detail-item">
+              <label>{{ 'common.branch' | translate }}</label>
+              <p>{{ strategy()!.tenantId }}</p>
+            </div>
+            <div class="detail-item">
+              <label>{{ 'common.department' | translate }}</label>
+              <p>{{ strategy()!.department?.name }}</p>
+            </div>
+            <div class="detail-item">
+              <label>{{ 'common.budget' | translate }}</label>
+              <p>{{ strategy()!.budget }}</p>
+            </div>
+            <div class="detail-item">
+              <label>{{ 'common.created_at' | translate }}</label>
+              <p>{{ strategy()!.createdAt | date: 'yyyy-MM-dd' }}</p>
+            </div>
+          </div>
+          <div>
+            <label>{{ 'common.description' | translate }}</label>
+            <div class="description-box">{{ strategy()!.description }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="strategy()!.goals && strategy()!.goals!.length > 0">
+        <label>{{ 'common.goals_details' | translate }}</label>
+        <div class="main-details">
+          <div class="details-grid">
+            <ng-container  *ngFor="let goal of strategy()!.goals; let last = last">
+              <div class="detail-item">
+                <label>{{ 'common.goal_name' | translate }}</label>
+                <p>{{ goal.name }}</p>
+              </div>
+              <div class="detail-item">
+                <label>{{ 'common.goal_budget' | translate }}</label>
+                <p>{{ goal.budget }}</p>
+              </div>
+              <div class="detail-item">
+                <label>{{ 'common.goal_reach' | translate }}</label>
+                <p>{{ goal.reach }}</p>
+              </div>
+              <div class="detail-item">
+                <label>{{ 'common.goal_expenses' | translate }}</label>
+                <p>{{ goal.expenses }}</p>
+              </div>
+              <div class="detail-item">
+                <label>{{ 'common.goal_deadline' | translate }}</label>
+                <p>{{ goal.deadline | date: 'yyyy-MM-dd' }}</p>
+              </div>
+              <div>
+                <label>{{ 'common.goal_description' | translate }}</label>
+                <p class="description-box">{{ goal.description }}</p>
+              </div>
+              <hr *ngIf="!last" />
+            </ng-container>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="strategy()!.attachments">
+        <div class="main-details">
+          <div class="form-group">
+            <label>{{ 'common.attachments_details' | translate }}</label>
+            <div class="main-details">
+              <div class="form-group" *ngIf="strategy()!.attachments">
+                <label>{{ 'common.attachments' | translate }}</label>
+                <div class="attachments">
+                  <div class="attachment" *ngFor="let file of currentAttachments(); let i = index">
+                    <div class="img-attach" *ngIf="file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png') || file.endsWith('.gif')">
+                      <a [href]="'https://api.kayanatdashboard.com/api/' + file.trim()" target="_blank" class="attachment-link">
+                        <img [src]="'https://api.kayanatdashboard.com/api/' + file.trim()" alt="Attachment" class="attachment-img"/>
+                      </a>
+                    </div>
+                    <div class="file-attach" *ngIf="!(file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png') || file.endsWith('.gif'))">
+                      <a [href]="'https://api.kayanatdashboard.com/api/' + file.trim()" target="_blank" class="attachment-link">{{ file.split('/').pop()?.split('_')!.slice(1).join('_') }}</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-secondary" (click)="close()">{{ 'common.close' | translate }}</button>
+        <ng-container *hasPermission="'strategy:update'">
+          <button class="btn btn-primary" (click)="enableEdit()">{{ 'common.edit' | translate }}</button>
+        </ng-container>
+      </div>
+    </div>
+
+
+    <div class="modal-body" *ngIf="strategy() && editMode()">
+      <div class="form-group">
+        <label>{{ 'common.strategy_details' | translate }}</label>
+        <div class="main-details">
+          <div class="details-grid">
+            <div class="form-group">
+              <label>{{ 'common.title' | translate }}</label>
+              <input [(ngModel)]="updatedTitle" />
+            </div>
+            <div class="form-group">
+              <label>{{ 'strategy.budget' | translate }}</label>
+              <input type="number" [(ngModel)]="updatedBudget" />
+            </div>
+            <div class="form-group">
+              <label>{{ 'common.branch' | translate }}</label>
+              <select name="updatedBranch" [(ngModel)]="updatedBranch">
+                @for (b of branches(); track $index) {
+                  <option [ngValue]="b.name">{{ b.name }}</option>
+                }
+              </select>
+            </div>
+            <div class="form-group">
+              <label>{{ 'common.department' | translate }}</label>
+              <select name="department" [(ngModel)]="updatedDepartmentId" required>
+                @for (d of departments(); track $index) {
+                  <option [ngValue]="d.id">{{ d.name }}</option>
+                }
+              </select>
+            </div>
+            <div class="form-group">
+              <label>{{ 'common.active' | translate }}</label>
+              <input class="form-check-input" type="checkbox" [(ngModel)]="updatedActive" />
+              {{ updatedActive ? ( 'common.yes' | translate ) : ( 'common.no' | translate ) }}
+            </div>
+          </div>
+          <div class="form-group">
+            <label>{{ 'common.description' | translate }}</label>
+            <textarea [(ngModel)]="updatedDescription"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>{{ 'common.goals_details' | translate }}</label>
+        <div class="main-details">
+          <div class="form-group">
+            <label>{{ 'common.goals' | translate }}</label>
+            <div class="goal-item" *ngFor="let goal of updatedGoals; let i = index; let last = last">
+              <div class="details-grid">
+                <div class="form-group">
+                  <label>{{ 'common.goal_name' | translate }}</label>
+                  <input type="text" [(ngModel)]="goal.name" name="goalName{{i}}" required />
+                </div>
+                <div class="form-group">
+                  <label>{{ 'common.goal_budget' | translate }}</label>
+                  <input type="text" [(ngModel)]="goal.budget" name="goalBudget{{i}}" required />
+                </div>
+                <div class="form-group">
+                  <label>{{ 'common.goal_reach' | translate }}</label>
+                  <input type="text" [(ngModel)]="goal.reach" name="goalReach{{i}}" required />
+                </div>
+                <div class="form-group">
+                  <label>{{ 'common.goal_expenses' | translate }}</label>
+                  <input type="text" [(ngModel)]="goal.expenses" name="goalExpenses{{i}}" required />
+                </div>
+              </div>
+              <div class="form-group">
+                <label>{{ 'common.goal_description' | translate }}</label>
+                <textarea rows="2" [(ngModel)]="goal.description" name="goalDescription{{i}}" required></textarea>
+              </div>
+              <div class="form-group">
+                <label>{{ 'common.goal_deadline' | translate }}</label>
+                <input type="date" [(ngModel)]="goal.deadline" name="goalDeadline{{i}}" />
+              </div>
+              <button class="btn delete-btn btn-sm" [disabled]="(updatedGoals.length <= 1)" (click)="removeGoal(i)"><i class="fa-solid fa-trash"></i></button>
+              <hr *ngIf="!last" />
+            </div>
+            <button type="button" class="btn btn-success btn-sm" (click)="addGoal()">{{ 'common.add_goal' | translate }}</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>{{ 'common.attachments_details' | translate }}</label>
+        <div class="main-details">
+          <div class="form-group" *ngIf="strategy()!.attachments">
+            <div class="attachments">
+              <div class="attachment" *ngFor="let file of currentAttachments(); let i = index">
+                <div class="img-attach" *ngIf="file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png') || file.endsWith('.gif')">
+                  <a [href]="'https://api.kayanatdashboard.com/api/' + file.trim()" target="_blank" class="attachment-link">
+                    <img [src]="'https://api.kayanatdashboard.com/api/' + file.trim()" alt="Attachment" class="attachment-img"/>
+                  </a>
+                  <button type="button" (click)="removeCurrentAttachment(i)">×</button>
+                </div>
+                <div class="file-attach" *ngIf="!(file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png') || file.endsWith('.gif'))">
+                  <a [href]="'https://api.kayanatdashboard.com/api/' + file.trim()" target="_blank" class="attachment-link">{{ file.split('/').pop()?.split('_')!.slice(1).join('_') }}</a>
+                  <button type="button" (click)="removeCurrentAttachment(i)">×</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <input type="file" multiple (change)="handleAttachmentInput($event)" />
+            <ul *ngIf="newAttachments.length > 0">
+              <li *ngFor="let file of newAttachments; let i = index">
+                {{ file.name }}
+                <button type="button" (click)="removeNewAttachment(i)">×</button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-secondary" (click)="cancelChanges()">{{ 'common.cancel' | translate }}</button>
+        <button class="btn btn-success" (click)="saveChanges()">{{ 'common.save' | translate }}</button>
+      </div>
+    </div>
+
+  </div>
+</div>

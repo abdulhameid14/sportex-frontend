@@ -1,0 +1,43 @@
+.nested-page-header {
+  background: linear-gradient(190deg, #c4d0e0, #e5ebf3);
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  @media (max-width: 600px) {
+    padding: 20px 10px;
+  }
+  .page-title {
+    color: #333;
+  }
+}
+
+@media (max-width: 900px) {
+  button{
+    font-size: 14px !important;
+    padding: 8px 12px !important;
+  }
+}
+
+@media (max-width: 500px) {
+  button{
+    font-size: 10px !important;
+    padding: 6px 6px !important;
+  }
+}
+
+
+@media (max-width: 400px) {
+  button{
+    font-size: 9px !important;
+    padding: 6px 6px !important;
+  }
+}
+
+app-pagination-button{
+  margin: 2px 0px;
+}

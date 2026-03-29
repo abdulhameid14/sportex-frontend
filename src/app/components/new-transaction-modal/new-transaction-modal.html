@@ -1,0 +1,57 @@
+@if (isOpen()) {
+  <div class="modal-overlay" (click)="close()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <button class="close-btn" (click)="close()">×</button>
+      <div class="modal-header">
+        <h2>{{ 'modals.add_transaction' | translate }}</h2>
+      </div>
+      <div class="modal-body">
+        <form #transForm="ngForm" (ngSubmit)="submit(transForm)">
+          <div class="form-group">
+            <label>{{ 'common.transaction_details' | translate }}</label>
+            <div class="main-details">
+              <div class="details-grid">
+                <div class="form-group">
+                  <label>{{ 'common.title' | translate }}</label>
+                  <input type="text" name="title" ngModel required />
+                </div>
+                <div class="form-group">
+                  <label>{{ 'common.department' | translate }}</label>
+                  <select name="department" ngModel required>
+                    @for (d of departments(); track $index) {
+                      <option [ngValue]="d">{{ d.name }}</option>
+                    }
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>{{ 'common.fees' | translate }}</label>
+                  <input type="number" name="fees" ngModel required />
+                </div>
+              </div>
+              <div class="form-group">
+                <label>{{ 'common.content' | translate }}</label>
+                <textarea name="content" ngModel required></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>{{ 'common.attachments' | translate }}</label>
+            <input type="file" multiple (change)="handleFileInput($event)" />
+            <ul *ngIf="attachments.length > 0">
+              <li *ngFor="let file of attachments; let i = index">
+                {{ file.name }}
+                <button type="button" (click)="removeAttachment(i)">×</button>
+              </li>
+            </ul>
+          </div>
+
+          <div class="modal-actions">
+            <button type="submit" class="btn btn-primary" [disabled]="transForm.invalid">{{ 'common.save' | translate }}</button>
+            <button type="button" class="btn btn-secondary" (click)="close()">{{ 'common.cancel' | translate }}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+}

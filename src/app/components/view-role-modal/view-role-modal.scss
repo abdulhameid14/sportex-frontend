@@ -1,0 +1,35 @@
+.permissions-group {
+  display: flex;
+  flex-direction: column;
+  max-height: 150px;
+}
+
+.permissions-list {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f3f3f3;
+  overflow-y: auto;
+}
+
+.permissions-option p {
+  width: auto;
+  padding: 0px;
+}
+
+.module-group {
+  margin-bottom: 1rem;
+
+  .module-title {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+
+  .permissions-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+}

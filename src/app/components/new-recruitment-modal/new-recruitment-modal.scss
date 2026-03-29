@@ -1,0 +1,38 @@
+.form-row .form-group.half label {
+  margin-right: 5px;
+}
+
+.check-b .form-group {
+  display: flex;
+  align-items: center; /* vertical centering */
+}
+
+.form-row .form-group.half label.mandatory-option {
+  margin: 0; /* remove top margin */
+}
+
+.mandatory-option {
+  display: inline-flex !important; /* override block */
+  align-items: center;
+  gap: 2px; /* spacing between checkbox and text */
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.delete-btn{
+  background-color: white;
+}
+
+.delete-btn:disabled{
+  background-color: white !important;
+}
+
+.fa-trash{
+  font-size: small;
+  color: black;
+}
+
+hr{
+  margin: 10px;
+}

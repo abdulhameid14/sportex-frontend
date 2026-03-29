@@ -1,0 +1,87 @@
+.employees-group {
+  display: flex;
+  flex-direction: column;
+  max-height: 150px;
+}
+
+.employees-list {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f3f3f3;
+  overflow-y: auto;
+}
+
+.employees-option{
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.employees-option input {
+  width: auto;
+  padding: 0px;
+}
+
+.selected-managers, .selected-workers {
+  margin: 0.9rem 0;
+}
+
+.selected-list {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.4rem;
+  overflow-x: auto;
+  /* Hide scrollbar for Chrome, Safari and Edge */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for Firefox */
+  scrollbar-width: none;
+  /* Hide scrollbar for IE, Edge Legacy */
+  -ms-overflow-style: none;
+}
+
+.worker-chip, .manager-chip {
+  background: #f0f0f0;
+  border-radius: 20px;
+  padding: 0.3rem 0.7rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  white-space: nowrap;      /* prevent line breaks */
+}
+
+.remove-worker, .remove-manager {
+  background: transparent;
+  border: none;
+  color: red;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.remove-worker:disabled, .remove-manager:disabled {
+  background: #f0f0f0;
+  cursor: not-allowed;
+}
+
+.remove-worker:disabled:hover, .remove-manager:disabled:hover {
+  background: #f0f0f0;
+  cursor: not-allowed;
+}
+
+.delete-btn{
+  background-color: white;
+}
+
+.delete-btn:disabled{
+  background-color: white !important;
+}
+
+.fa-trash{
+  font-size: small;
+}

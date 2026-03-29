@@ -1,0 +1,184 @@
+.emp-performance {
+  width: 100%;
+  margin: 10px 0px;
+  background: #ffffff;
+  padding: 1.3rem;
+  border-radius: 16px;
+  border: 1px solid #e9e7e7;
+}
+
+/* HEADER */
+.emp-performance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.emp-performance h3 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #222;
+  @media (max-width: 600px) {
+    font-size: 1.1rem;
+  }
+  @media (max-width: 500px) {
+    font-size: 1rem;
+  }
+    @media (max-width: 450px) {
+    font-size: 0.8rem;
+  }
+}
+
+.emp-summary {
+  background: #f1f5ff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  @media (max-width: 600px) {
+    font-size: 0.6rem;
+  }
+  @media (max-width: 450px) {
+    font-size: 0.5rem;
+  }
+}
+
+/* PERFORMANCE CARDS LIST (GRID) */
+.performance-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+  margin-top: 0.8rem;
+  max-width: 100%;
+  @media (max-width: 500px) {
+    grid-template-columns: 1fr;
+  }
+}
+.signature-group {
+  margin-top: 1rem;
+  width: 100%;
+
+  img {
+    padding: 30px;
+    max-width: 200px;
+    height: auto;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+  }
+}
+/* PERFORMANCE CARD - MATCHES TERMS CARD STYLE */
+.performance-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  max-height: 300px;
+  max-width: 100%;
+  overflow-y: auto;
+  // Hide scrollbar but allow scrolling
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+}
+
+.performance-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+}
+
+/* Small clean separator like terms section */
+.performance-card hr {
+  border: none;
+  border-top: 1px solid #f0f0f0;
+  margin: 0.5rem 0;
+}
+
+/* BADGE – modern look */
+.rating-badge {
+  display: inline-block;
+  background: #e7f7e7;
+  padding: 6px 12px;
+  color: #2d8a2d;
+  border-radius: 8px;
+  font-weight: 600;
+  margin: 0.6rem 0;
+}
+
+/* SECTION HEADERS */
+.perf-section h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 6px;
+}
+
+/* SMALL CARDS INSIDE */
+.perf-header,
+.goal-card,
+.feedback-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  padding: 8px 10px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+.goal-status {
+  font-weight: 600;
+}
+
+.goal-comment {
+  font-size: 0.85rem;
+}
+
+.seperator {
+  margin: 5px;
+}
+
+/* EMPTY STATE */
+.no-performance {
+  text-align: center;
+  color: #999;
+  font-size: 1rem;
+  padding: 20px;
+  font-style: italic;
+}
+
+.delete-btn{
+  background-color: white;
+}
+
+.delete-btn:disabled{
+  background-color: white !important;
+}
+
+.fa-trash{
+  font-size: small;
+}
+
+
+  .input-icon {
+    position: relative;
+
+    i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #777;
+    }
+  }
+
+.error small {
+  color: #e74c3c;
+  font-size: 12px;
+}
+
+input.ng-invalid.ng-touched {
+  border-color: #e74c3c;
+}

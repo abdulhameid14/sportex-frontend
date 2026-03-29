@@ -1,0 +1,118 @@
+<div id="page-tasks" class="page">
+  <div class="page-header">
+    <h1 class="page-title">{{ 'tasks.daily_tasks' | translate }}</h1>
+    <div class="page-actions">
+      <button class="btn btn-header" *hasPermission="'task:create'" (click)="openNewTaskModal()">
+        {{ 'tasks.new_task' | translate }}
+      </button>
+    </div>
+  </div>
+  <div *hasAnyPermission="['task:read', 'task:all']" class="table-container">
+    <div class="table-header">
+      <div class="table-title">{{ 'tasks.tasks' | translate }}</div>
+      <div class="table-filters">
+        <select class="filter-select" [(ngModel)]="filteredStatus" (change)="applyFilter()">
+          <option value="ALL">{{ 'status.all_status' | translate }}</option>
+          <option value="APPROVED">{{ 'status.approved' | translate }}</option>
+          <option value="COMPLETED">{{ 'status.completed' | translate }}</option>
+          <option value="CANCELLED">{{ 'status.cancelled' | translate }}</option>
+          <option value="IN_PROGRESS">{{ 'status.in_progress' | translate }}</option>
+          <option value="PENDING">{{ 'status.pending' | translate }}</option>
+          <option value="REJECTED">{{ 'status.rejected' | translate }}</option>
+          <option value="REVIEW">{{ 'status.review' | translate }}</option>
+          <option value="SUBMITTED">{{ 'status.submitted' | translate }}</option>
+        </select>
+      </div>
+    </div>
+    <div class="table-body">
+      @if (isLoading()) {
+      <div>
+        <app-skeleton-table [rows]="4" [cols]="5"></app-skeleton-table>
+      </div>
+      } @else {
+      <table>
+        <thead>
+          <tr>
+            <th>{{ 'common.title' | translate }}</th>
+            <th>{{ 'common.assigned_to' | translate }}</th>
+            <th>{{ 'consultantsEmpolyee' | translate }}</th>
+            <th>{{ 'common.created_by' | translate }}</th>
+            <th>{{ 'common.priority' | translate }}</th>
+            <th>{{ 'common.deadline' | translate }}</th>
+            <th>{{ 'common.status' | translate }}</th>
+            <th>{{ 'common.actions' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (task of taskList(); track task.id) {
+          <tr>
+            <td>{{ task.title }}</td>
+            <td>{{ task.assignedToEmployee?.name }}</td>
+            <td>{{ task.consultantEmployee?.name }}</td>
+            <td>{{ task.createdByEmployee?.name }}</td>
+            <td>
+              @if (task.priority < 4) {
+              <span class="status-badge status-rejected">{{ 'status.high' | translate }}</span>
+              } @else if (task.priority >= 4 && task.priority <= 7) {
+              <span class="status-badge status-pending">{{ 'status.medium' | translate }}</span>
+              } @else if (task.priority > 7) {
+              <span class="status-badge status-approved">{{ 'status.low' | translate }}</span>
+              }
+            </td>
+            <td>{{ task.deadline | date : 'dd/MM/yyyy' }}</td>
+            <td>
+              @if (task.status == taskStatus.APPROVED) {
+              <span class="status-badge status-approved">{{ 'status.approved' | translate }}</span>
+              } @else if (task.status == taskStatus.PENDING) {
+              <span class="status-badge status-pending">{{ 'status.pending' | translate }}</span>
+              } @else if (task.status == taskStatus.REJECTED) {
+              <span class="status-badge status-rejected">{{ 'status.rejected' | translate }}</span>
+              } @else if (task.status == taskStatus.IN_PROGRESS) {
+              <span class="status-badge status-pending">{{
+                'status.in_progress' | translate
+              }}</span>
+              } @else if (task.status == taskStatus.COMPLETED) {
+              <span class="status-badge status-approved">{{ 'status.completed' | translate }}</span>
+              } @else if (task.status == taskStatus.CANCELLED) {
+              <span class="status-badge status-rejected">{{ 'status.cancelled' | translate }}</span>
+              } @else if (task.status == taskStatus.REVIEW) {
+              <span class="status-badge status-draft">{{ 'status.review' | translate }}</span>
+              } @else if (task.status == taskStatus.SUBMITTED) {
+              <span class="status-badge status-approved">{{ 'status.submitted' | translate }}</span>
+              }
+            </td>
+            <td class="table-btns">
+              <button class="btn btn-primary btn-sm" (click)="openViewTaskModal(task)">
+                {{ 'common.view' | translate }}
+              </button>
+              <i
+                class="fa-solid fa-clipboard-check"
+                *hasPermission="'task:submit'"
+                (click)="openTaskSubmitModal(task)"
+              ></i>
+              <i
+                class="fa-solid fa-trash"
+                *hasPermission="'task:delete'"
+                (click)="deleteTask(task.id)"
+              ></i>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+      }
+    </div>
+    <app-pagination-button
+      [lastPageReached]="lastPageReached()"
+      [hidden]="taskList().length === 0"
+      [itemsPerPage]="itemsPerPage()"
+      [currentPage]="currentPage()"
+      (pageChange)="loadTasks($event)"
+    ></app-pagination-button>
+  </div>
+</div>
+<app-new-task-modal (save)="saveNewTask($event)"></app-new-task-modal>
+<app-view-task-modal (update)="updateTask($event)"></app-view-task-modal>
+<app-delete-validation-modal #deleteModal></app-delete-validation-modal>
+<app-task-submit-modal (closed)="taskSubmited($event)"></app-task-submit-modal>
+<app-toast></app-toast>

@@ -1,0 +1,171 @@
+<nav class="sidebar">
+  <a routerLink="/dashboard" routerLinkActive="active" class="nav-item" (click)="toggleSidebar()"
+    ><span class="icon"><i class="fa-solid fa-chart-simple"></i></span>
+    {{ 'dashboard.dashboard' | translate }}</a
+  >
+  <a
+    *hasAnyPermission="['task:read', 'task:all', 'task:update', 'task:delete']"
+    [hidden]="!isModuleVisible('tasks')"
+    routerLink="/tasks"
+    routerLinkActive="active"
+    class="nav-item"
+    (click)="toggleSidebar()"
+    ><span class="icon"><i class="fa-solid fa-list-check"></i></span>
+    {{ 'tasks.daily_tasks' | translate }}</a
+  >
+  <a
+    *hasAnyPermission="['request:read', 'request:all', 'request:update', 'request:delete']"
+    [hidden]="!isModuleVisible('requests')"
+    routerLink="/requests"
+    routerLinkActive="active"
+    class="nav-item"
+    (click)="toggleSidebar()"
+    ><span class="icon"><i class="fa-solid fa-hand-paper"></i></span>
+    {{ 'requests.requests' | translate }}</a
+  >
+  <a
+    *hasAnyPermission="['report:read', 'report:all', 'report:update', 'report:delete']"
+    [hidden]="!isModuleVisible('reports')"
+    routerLink="/reports"
+    routerLinkActive="active"
+    class="nav-item"
+    (click)="toggleSidebar()"
+    ><span class="icon"><i class="fa-solid fa-file"></i></span>
+    {{ 'reports.reports' | translate }}</a
+  >
+  <a routerLink="/esign" [hidden]="!isModuleVisible('esign')" routerLinkActive="active" class="nav-item" (click)="toggleSidebar()"
+    ><span class="icon"><i class="fa-solid fa-file-pen"></i></span>
+    {{ 'esignature.e_signature' | translate }}</a
+  >
+  <a routerLink="/chat" [hidden]="!isModuleVisible('chat')" routerLinkActive="active" class="nav-item" (click)="toggleSidebar()"
+    ><span class="icon"><i class="fa-solid fa-comments"></i></span>
+    {{ 'chat.chats' | translate }}</a
+  >
+  <a
+    *hasAnyPermission="['employee:read', 'employee:all', 'employee:update', 'employee:delete']"
+    [hidden]="!isModuleVisible('hr')"
+    routerLink="/hr"
+    routerLinkActive="active"
+    class="nav-item"
+    (click)="toggleSidebar()"
+    ><span class="icon"><i class="fa-solid fa-users"></i></span>
+    {{ 'hr.human_resources' | translate }}</a
+  >
+  <a routerLink="/jisr" [hidden]="!isModuleVisible('jisr')" routerLinkActive="active" class="nav-item" (click)="toggleSidebar()"
+    ><span class="icon"><i class="fa-solid fa-calendar"></i></span>
+    {{ 'common.jisr' | translate }}</a
+  >
+  <a
+    *hasAnyPermission="['report:read', 'report:all', 'report:update', 'report:delete']"
+    [hidden]="!isModuleVisible('finance')"
+    routerLink="/finance"
+    routerLinkActive="active"
+    class="nav-item"
+    (click)="toggleSidebar()"
+    ><span class="icon"><i class="fa-solid fa-sack-dollar"></i></span>
+    {{ 'finance.finance' | translate }}</a
+  >
+  <a
+    *hasAnyPermission="['strategy:read', 'strategy:all', 'strategy:update', 'strategy:delete']"
+    [hidden]="!isModuleVisible('strategy')"
+    routerLink="/strategy"
+    routerLinkActive="active"
+    class="nav-item"
+    (click)="toggleSidebar()"
+    ><span class="icon"><i class="fa-solid fa-bullseye"></i></span>
+    {{ 'strategy.strategies' | translate }}</a
+  >
+  <a
+    *hasAnyPermission="['project:read', 'project:all', 'project:update', 'project:delete']"
+    [hidden]="!isModuleVisible('projects')"
+    routerLink="/projects"
+    routerLinkActive="active"
+    class="nav-item"
+    (click)="toggleSidebar()"
+    ><span class="icon"><i class="fa-solid fa-diagram-project"></i></span>
+    {{ 'projects.projects' | translate }}</a
+  >
+  <a
+    *hasAnyPermission="['tenant:manage']"
+    routerLink="/branches"
+    routerLinkActive="active"
+    class="nav-item"
+    (click)="toggleSidebar()"
+    ><span class="icon"><i class="fa-solid fa-location-dot"></i></span>
+    {{ 'branches.branches' | translate }}</a
+  >
+  <a
+    *hasAnyPermission="[
+      'department:read',
+      'department:all',
+      'department:update',
+      'department:delete'
+    ]"
+    [hidden]="!isModuleVisible('departments')"
+    routerLink="/departments"
+    routerLinkActive="active"
+    class="nav-item"
+    (click)="toggleSidebar()"
+    ><span class="icon"><i class="fa-solid fa-building"></i></span>
+    {{ 'departments.departments' | translate }}</a
+  >
+  <a
+    *hasAnyPermission="[
+      'recruitment:read',
+      'recruitment:all',
+      'recruitment:update',
+      'recruitment:delete'
+    ]"
+    [hidden]="!isModuleVisible('recruitment')"
+    routerLink="/recruitment"
+    routerLinkActive="active"
+    class="nav-item"
+    (click)="toggleSidebar()"
+    ><span class="icon"><i class="fa-solid fa-user-plus"></i></span>
+    {{ 'recruitment.recruitments' | translate }}</a
+  >
+  <a
+    *hasAnyPermission="[
+      'announcement:read',
+      'announcement:all',
+      'announcement:update',
+      'announcement:delete'
+    ]"
+    [hidden]="!isModuleVisible('announcement')"
+    routerLink="/announcement"
+    routerLinkActive="active"
+    class="nav-item"
+    (click)="toggleSidebar()"
+    ><span class="icon"><i class="fa-solid fa-bullhorn"></i></span>
+    {{ 'announcement.announcements' | translate }}</a
+  >
+  <a
+    *hasPermission="'notification:send'"
+    [hidden]="!isModuleVisible('notifications')"
+    routerLink="/notifications"
+    routerLinkActive="active"
+    class="nav-item"
+    (click)="toggleSidebar()"
+    ><span class="icon"><i class="fa-solid fa-bell"></i></span>
+    {{ 'notification.notifications' | translate }}</a
+  >
+  <a
+    *hasAnyPermission="[
+      'external-report:read',
+      'external-report:all',
+      'external-report:update',
+      'external-report:delete'
+    ]"
+    [hidden]="!isModuleVisible('external-reports')"
+    routerLink="/external-reports"
+    routerLinkActive="active"
+    class="nav-item"
+    (click)="toggleSidebar()"
+    ><span class="icon"><i class="fa-solid fa-file-export"></i></span>
+    {{ 'externalReports.external_reports' | translate }}</a
+  >
+  <a routerLink="/settings" [hidden]="!isModuleVisible('settings')" routerLinkActive="active" class="nav-item" (click)="toggleSidebar()"
+    ><span class="icon"><i class="fa-solid fa-gear"></i></span>
+    {{ 'settings.settings' | translate }}</a
+  >
+</nav>

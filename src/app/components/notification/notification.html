@@ -1,0 +1,18 @@
+@if (isOpen()) {
+<div class="overlay" (click)="close()">
+  <div class="dropdown" (click)="$event.stopPropagation()">
+    <div class="content">
+      @for (noti of this.notifications; track $index) {
+      <div class="noti">
+        <a class="title">{{ noti.title }}</a>
+        <br />
+        <a class="message">{{ noti.message }}</a>
+        <br />
+        <span class="time">{{ noti.receivedAt.toLocaleString().split('T')[0] }}</span>
+      </div>
+      }
+    </div>
+    <button class="clear-btn" (click)="clearNotifications()">clear</button>
+  </div>
+</div>
+}

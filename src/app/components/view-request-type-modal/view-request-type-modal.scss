@@ -1,0 +1,20 @@
+.signers-group {
+  display: flex;
+  flex-direction: column;
+  max-height: 150px;
+}
+
+.signers-list {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f3f3f3;
+  overflow-y: auto;
+}
+
+.signers-option p {
+  width: auto;
+  padding: 0px;
+}

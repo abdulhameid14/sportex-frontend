@@ -1,0 +1,51 @@
+<div id="page-tasks" class="page">
+  <div class="page-header">
+    <h1 class="page-title">{{ 'projects.projects' | translate }}</h1>
+    <div class="page-actions">
+      <button *hasPermission="'project:create'" class="btn btn-header" (click)="openNewProjectModal()">{{ 'projects.new_project' | translate }}</button>
+    </div>
+  </div>
+  <div *hasAnyPermission="['project:read', 'project:all']" class="table-container">
+    <div class="table-header">
+      <div class="table-title">{{ 'projects.projects' | translate }}</div>
+    </div>
+    <div class="table-body">
+      @if (isLoading()) {
+        <div>
+          <app-skeleton-table [rows]="4" [cols]="4"></app-skeleton-table>
+        </div>
+      }
+      @else {
+      <table>
+        <thead>
+          <tr>
+            <th>{{ 'common.name' | translate }}</th>
+            <th>{{ 'common.date' | translate }}</th>
+            <th>{{ 'common.budget' | translate }}</th>
+            <th>{{ 'common.actions' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (rec of projectsList(); track $index) {
+            <tr>
+              <td>{{ rec.name }}</td>
+              <td>{{ rec.createdAt | date:'dd/MM/yyyy' }}</td>
+              <td>{{ rec.totalBudget }}</td>
+              <td class="table-btns">
+                <button class="btn btn-primary btn-sm" (click)="openViewProjectModal(rec)">{{ 'common.view' | translate }}</button>
+                <i *hasPermission="'project:delete'" class="fa-solid fa-trash" (click)="deleteProject(rec.id)"></i>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      }
+    </div>
+      <app-pagination-button [lastPageReached]="lastPageReached()" [hidden]="projectsList().length === 0" [itemsPerPage]="itemsPerPage()" [currentPage]="currentPage()" (pageChange)="loadProjects($event)"></app-pagination-button>
+  </div>
+</div>
+<!-- Modal component -->
+<app-new-project-modal (save)="saveNewProject($event)"></app-new-project-modal>
+<app-view-project-modal (update)="updateProject($event)"></app-view-project-modal>
+<app-delete-validation-modal #deleteModal></app-delete-validation-modal>
+<app-toast></app-toast>

@@ -1,0 +1,119 @@
+.signers-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.signers-list {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f3f3f3;
+  max-height: 100px;
+  overflow-y: auto;
+}
+
+.signers-option input {
+  width: auto;
+  padding: 0px;
+}
+
+.selected-signers {
+  margin-top: 0.9rem;
+}
+
+.selected-list {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.4rem;
+  overflow-x: auto;
+  /* Hide scrollbar for Chrome, Safari and Edge */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for Firefox */
+  scrollbar-width: none;
+  /* Hide scrollbar for IE, Edge Legacy */
+  -ms-overflow-style: none;
+}
+
+.signer-chip {
+  background: #f0f0f0;
+  border-radius: 20px;
+  padding: 0.3rem 0.7rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  white-space: nowrap;      /* prevent line breaks */
+}
+
+.remove-signer {
+  background: transparent;
+  border: none;
+  color: red;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.include-fee {
+  margin-top: 10px;
+}
+
+.include-fee-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  user-select: none;
+  position: relative;
+}
+
+/* Hide default checkbox */
+.include-fee-label input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Custom checkbox */
+.include-fee-label .checkmark {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  background: #fff;
+}
+
+/* Checked state */
+.include-fee-label input:checked + .checkmark {
+  background-color: #000;
+  border-color: #000;
+}
+
+/* Check icon */
+.include-fee-label .checkmark::after {
+  content: '';
+  width: 5px;
+  height: 9px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  display: none;
+}
+
+.include-fee-label input:checked + .checkmark::after {
+  display: block;
+}
+
+/* Hover effect */
+.include-fee-label:hover .checkmark {
+  border-color: #000;
+}

@@ -1,0 +1,61 @@
+<div class="page">
+  <div class="page-header">
+    <h1 class="page-title">ExternalReports</h1>
+    <div class="page-actions">
+      <button class="btn btn-primary" (click)="openNew()">New</button>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <div *ngIf="isLoading()">Loading...</div>
+    <table *ngIf="!isLoading()" class="table">
+      <thead>
+        <tr>
+          <th>{{ 'common.title' | translate }}</th>
+          <th>{{ 'common.content' | translate }}</th>
+          <th>{{ 'common.department' | translate }}</th>
+          <th>{{ 'common.assigned_to' | translate }}</th>
+          <th>Creator</th>
+          <th>{{ 'common.created_at' | translate }}</th>
+          <th>{{ 'common.docs_to_sign' | translate }}</th>
+          <th>{{ 'common.sign_status' | translate }}</th>
+          <th>{{ 'common.actions' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let r of reports()">
+          <td>{{ r.title }}</td>
+          <td>{{ r.content }}</td>
+          <td>{{ r.department?.name || r.departmentId }}</td>
+          <td>{{ r.assignedTo?.name || r.assignedToId }}</td>
+          <td>{{ r.creator?.name || r.creatorId }}</td>
+          <td>{{ r.createdAt | date : 'short' }}</td>
+          <td>
+            <a *ngIf="r.documentToSign" [href]="r.documentToSign" target="_blank">{{
+              'common.document' | translate
+            }}</a>
+            <span *ngIf="!r.documentToSign">-</span>
+          </td>
+          <td>{{ r.signed ? ('common.approved' | translate) : ('common.pending' | translate) }}</td>
+          <td style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center">
+            <button class="btn btn-secondary" (click)="editReport(r)">
+              {{ 'common.edit' | translate }}
+            </button>
+            <button class="btn btn-danger" (click)="deleteReport(r.id || '')">
+              {{ 'common.delete' | translate }}
+            </button>
+            <button
+              *ngIf="isCurrentUserAssignee(r)"
+              class="btn btn-primary"
+              (click)="signReport(r)"
+            >
+              {{ 'common.sign' | translate }}
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <app-new-external-report-modal (save)="handleSave($event)"></app-new-external-report-modal>
+</div>

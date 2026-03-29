@@ -1,0 +1,101 @@
+<div id="page-esign" class="page">
+  <div class="page-header">
+    <h1 class="page-title">{{ 'esignature.e_signature' | translate }}</h1>
+  </div>
+  <div class="nav-tabs" *hasPermission="'uploads:own'">
+    <button class="nav-tab" [class.active]="currentTab() === 'docs'" (click)="changeTab('docs')">{{ 'esignature.e_signature' | translate }}</button>
+    <button class="nav-tab" [class.active]="currentTab() === 'archives'" (click)="changeTab('archives')">{{ 'common.archives' | translate }}</button>
+  </div>
+  <div class="table-container">
+    <div class="table-header">
+      <div class="table-title" [hidden]="currentTab() != 'docs'">{{ 'esignature.e_signature' | translate }}</div>
+      <div class="table-title" [hidden]="currentTab() != 'archives'">{{ 'common.archives' | translate }}</div>
+      <div class="table-filters" *hasPermission="'uploads:all'">
+        <select
+          class="filter-select"
+          [hidden]="currentTab() != 'archives'"
+          (change)="branchFilter.set($any($event.target).value); loadDocs(1)">
+          <option value="all">{{ 'common.all_branches' | translate }}</option>
+          @for (b of branchList(); track $index) {
+            <option [value]="b.name">{{ b.name }}</option>
+          }
+        </select>
+      </div>
+    </div>
+    <div class="table-body">
+      @if (isLoading()) {
+        <div>
+          <app-skeleton-table [rows]="4" [cols]="6"></app-skeleton-table>
+        </div>
+      }
+      @else {
+      <table>
+        <thead>
+          <tr [hidden]="currentTab() != 'docs'">
+            <th>{{ 'common.title' | translate }}</th>
+            <th>{{ 'common.type' | translate }}</th>
+            <th>{{ 'common.submitted_by' | translate }}</th>
+            <th>{{ 'common.date' | translate }}</th>
+            <th>{{ 'common.status' | translate }}</th>
+            <th>{{ 'common.actions' | translate }}</th>
+          </tr>
+          <tr [hidden]="currentTab() != 'archives'">
+            <th></th>
+          </tr>
+        </thead>
+        @if (currentTab() === 'docs') {
+          <tbody>
+            @for (req of requestsList(); track $index) {
+              <tr>
+                <td>{{ req.title}}</td>
+                <td>{{ req.type?.name}}</td>
+                <td>{{ req.requesterEmployee?.name}}</td>
+                <td>{{ req.createdAt | date:'dd/MM/yyyy' }}</td>
+                <td>
+                  @if (req.status == requestStatus.APPROVED) {
+                    <span class="status-badge status-approved">{{ 'status.approved' | translate }}</span>
+                  } @else if (req.status == requestStatus.PENDING) {
+                    <span class="status-badge status-pending">{{ 'status.pending' | translate }}</span>
+                  } @else {
+                    <span class="status-badge status-rejected">{{ 'status.rejected' | translate }}</span>
+                  }
+                </td>
+                <td class="table-btns">
+                  <button class="btn btn-primary btn-sm" (click)="openViewRequestModal(req)">{{ 'common.view' | translate }}</button>
+                  <i class="fa-solid fa-file-pen" (click)="openSignModal(req)"></i>
+                </td>
+              </tr>
+            }
+          </tbody>
+        }
+        @if (currentTab() === 'archives') {
+          <tbody >
+            @for (req of requestsList(); track $index) {
+              <tr>
+                <td>
+                  @if (req.endsWith('.jpg') || req.endsWith('.jpeg') || req.endsWith('.png') || req.endsWith('.gif')) {
+                    <div class="img-attach">
+                      <a [href]="'https://api.kayanatdashboard.com/api/' + req.trim()" target="_blank" class="attachment-link">
+                        <img [src]="'https://api.kayanatdashboard.com/api/' + req.trim()" alt="Attachment" class="attachment-img"/>
+                      </a>
+                    </div>
+                  }
+                  @if (!(req.endsWith('.jpg') || req.endsWith('.jpeg') || req.endsWith('.png') || req.endsWith('.gif'))) {
+                    <div class="file-attach">
+                      <a [href]="'https://api.kayanatdashboard.com/api/' + req.trim()" target="_blank" class="attachment-link">{{ req.split('/').pop()?.split('_').slice(1).join('_') }}</a>
+                    </div>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        }
+      </table>
+      }
+    </div>
+    <app-pagination-button [lastPageReached]="lastPageReached()" [hidden]="currentTab() != 'docs'" [itemsPerPage]="itemsPerPage()" [currentPage]="currentPage()" (pageChange)="loadDocs($event)"></app-pagination-button>
+  </div>
+</div>
+
+<app-view-sign-request-modal></app-view-sign-request-modal>
+<app-sign-modal></app-sign-modal>

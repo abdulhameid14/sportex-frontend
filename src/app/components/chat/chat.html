@@ -1,0 +1,87 @@
+<div id="page-chat" class="page">
+  <div class="page-header">
+    <h1 class="page-title">{{ 'chat.chats' | translate }}</h1>
+    <div class="page-actions">
+      <button class="btn btn-header" (click)="openNewChatModal()">{{ 'chat.new_chat_room' | translate }}</button>
+    </div>
+  </div>
+
+  <div class="chat-layout">
+    <!-- Sidebar -->
+    <div class="card chat-sidebar">
+      <div class="card-header">{{ 'chat.chat_rooms_list' | translate }}</div>
+      <div class="chat-rooms">
+        <div
+          *ngFor="let room of rooms"
+          class="chat-room"
+          [class.active]="activeRoomId === room.id"
+          (click)="selectRoom(room)"
+        >
+          <div class="chat-room-info">
+            <div class="avatar" [ngClass]="getAvatarClass(room.name)">
+              {{ room.name.charAt(0) }}
+            </div>
+          </div>
+          <div class="chat-room-details">
+            <div class="chat-room-name">{{ room.name }}</div>
+            <div class="chat-room-last">
+              {{ room.lastMessageContent || 'No messages yet' }}
+            </div>
+          </div>
+          <div class="badge" *ngIf="room.unreadCount > 0">
+            {{ room.unreadCount }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat Window -->
+  <div class="card chat-window" *ngIf="activeRoomId" ngClass="active">
+    <div class="card-header">
+      {{ activeRoomName }}
+      <button class="close-btn" (click)="closeActiveChat()">×</button>
+    </div>
+
+    <div class="chat-messages" #chatContainer>
+      <div
+        *ngFor="let msg of messages.slice().reverse()"
+        class="message"
+        [class.sent]="msg.sender.id === employeeId"
+        [class.received]="msg.sender.id !== employeeId"
+      >
+        <div class="meta">
+          {{ msg.sender.name }} - {{ msg.createdAt | date : 'shortTime' }}
+          <span class="read-status" *ngIf="msg.sender.id === employeeId">
+            <ng-container *ngIf="msg.readAt; else singleCheck">✔✔</ng-container>
+            <ng-template #singleCheck>✔</ng-template>
+          </span>
+        </div>
+        <div class="text">{{ msg.content }}</div>
+      </div>
+    </div>
+
+    <div class="chat-input">
+      <input
+        type="text"
+        [(ngModel)]="newMessage"
+        placeholder="Write a message..."
+        (keydown.enter)="send()"
+        (keydown.escape)="closeActiveChat()"
+      />
+
+      <button type="button" class="btn btn-primary send-btn" (click)="send()">📤</button>
+    </div>
+  </div>
+
+  <div class="card chat-window empty" *ngIf="!activeRoomId">
+    <div class="empty-state">{{ 'chat.select_user' | translate }}</div>
+  </div>
+</div>
+
+<app-new-chat-modal
+  [isOpen]="isModalOpen"
+  [users]="users"
+  (save)="saveNewChat($event)"
+  (closed)="closeNewChatModal()"
+></app-new-chat-modal>

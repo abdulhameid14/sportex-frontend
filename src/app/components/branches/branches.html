@@ -1,0 +1,68 @@
+<div id="page-tasks" class="page">
+  <div class="page-header">
+    <h1 class="page-title">{{ 'branches.branches' | translate }}</h1>
+    <div class="page-actions">
+      <button class="btn btn-header" (click)="openNewBranchModal()">
+        {{ 'branches.new_branch' | translate }}
+      </button>
+    </div>
+  </div>
+  <div class="table-container">
+    <div class="table-header">
+      <div class="table-title">{{ 'branches.branches' | translate }}</div>
+    </div>
+    <div class="table-body">
+      @if (isLoading()) {
+      <div>
+        <app-skeleton-table [rows]="4" [cols]="3"></app-skeleton-table>
+      </div>
+      } @else {
+      <table>
+        <thead>
+          <tr>
+            <th>{{ 'common.logo' | translate }}</th>
+            <th>{{ 'common.name' | translate }}</th>
+            <th>{{ 'common.date' | translate }}</th>
+            <th>{{ 'common.actions' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (b of branchesList(); track $index) {
+          <tr>
+            <td>
+              @if (b.logo) {
+              <img
+                [src]="this.apiUrl() + b.logo"
+                alt="{{ b.name }}"
+                style="max-width: 60px; max-height: 60px; object-fit: cover; border-radius: 4px"
+              />
+              } @else {
+              <span style="color: #999; font-size: 0.9rem">-</span>
+              }
+            </td>
+            <td>{{ b.name }}</td>
+            <td>{{ b.createdAt | date : 'dd/MM/yyyy' }}</td>
+            <td class="table-btns">
+              <!-- <button class="btn btn-primary btn-sm" (click)="openViewBranchModal(b)">{{ 'common.view' | translate }}</button> -->
+              <i class="fa-solid fa-trash" (click)="deleteBranch(b.id)"></i>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+      }
+    </div>
+    <app-pagination-button
+      [lastPageReached]="lastPageReached()"
+      [hidden]="branchesList().length === 0"
+      [itemsPerPage]="itemsPerPage()"
+      [currentPage]="currentPage()"
+      (pageChange)="loadBranches($event)"
+    ></app-pagination-button>
+  </div>
+</div>
+<!-- Modal component -->
+<app-new-branch-modal (save)="saveNewBranch($event)"></app-new-branch-modal>
+<app-view-branch-modal (update)="updateBranch($event)"></app-view-branch-modal>
+<app-delete-validation-modal #deleteModal></app-delete-validation-modal>
+<app-toast></app-toast>

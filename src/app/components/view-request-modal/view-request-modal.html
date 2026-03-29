@@ -1,0 +1,393 @@
+@if (isOpen()) {
+<div class="modal-overlay" (click)="close()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="close()">×</button>
+    <div class="modal-header">
+      <h2>{{ 'modals.view_request' | translate }}</h2>
+    </div>
+
+    <div class="modal-body view-mode" *ngIf="request() && !editMode()">
+      <div class="meta-header">
+        <h1 class="main-title">{{ request()!.title }}</h1>
+        <div class="view-badges">
+          <span class="badge status">{{ 'status.' + request()!.status | translate }}</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>{{ 'common.request_details' | translate }}</label>
+        <div class="main-details">
+          <div class="details-grid">
+            <div class="detail-item">
+              <label>{{ 'common.task_type' | translate }}</label>
+              <p>{{ request()!.type?.name }}</p>
+            </div>
+            <div class="detail-item">
+              <label>{{ 'common.branch' | translate }}</label>
+              <p>{{ request()!.tenantId }}</p>
+            </div>
+            <div class="detail-item">
+              <label>{{ 'common.department' | translate }}</label>
+              <p>{{ request()!.department?.name }}</p>
+            </div>
+            <div class="detail-item">
+              <label>{{ 'common.created_by' | translate }}</label>
+              <p>{{ request()!.requesterEmployee?.name }}</p>
+            </div>
+            <div class="detail-item">
+              <label>{{ 'common.assigned_to' | translate }}</label>
+              <p>{{ request()!.assigneeEmployee?.name }}</p>
+            </div>
+            <div class="detail-item">
+              <label>{{ 'common.action' | translate }}</label>
+              <p>{{ request()!.action }}</p>
+            </div>
+            <div class="detail-item">
+              <label>{{ 'common.fees' | translate }}</label>
+              <p>{{ request()!.budget }}</p>
+            </div>
+            <!--               <div class="detail-item">
+                <label>{{ 'common.count' | translate }}</label>
+                <p>{{ request.count }}</p>
+              </div> -->
+            <div class="detail-item">
+              <label>{{ 'common.created_at' | translate }}</label>
+              <p>{{ request()!.createdAt | date : 'yyyy-MM-dd' }}</p>
+            </div>
+            <div class="detail-item">
+              <label>{{ 'common.to' | translate }}</label>
+              <p>{{ request()!.to }}</p>
+            </div>
+          </div>
+          <div>
+            <label>{{ 'common.description' | translate }}</label>
+            <div class="description-box">{{ request()!.description }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="request()!.task">
+        <label>{{ 'common.task_details' | translate }}</label>
+        <div class="main-details">
+          <div class="detail-item">
+            <div class="detail-item">
+              <label>{{ 'common.task_title' | translate }}</label>
+              <p>{{ request()!.task!.title }}</p>
+            </div>
+            <div class="detail-item">
+              <label>{{ 'common.task_created_at' | translate }}</label>
+              <p>{{ request()!.task!.createdAt }}</p>
+            </div>
+            <div class="detail-item">
+              <label>{{ 'common.task_assigned_to' | translate }}</label>
+              <p>{{ request()!.task!.assignedToEmployee }}</p>
+            </div>
+            <div class="detail-item">
+              <label>{{ 'common.task_created_by' | translate }}</label>
+              <p>{{ request()!.task!.createdByEmployee }}</p>
+            </div>
+            <div class="detail-item">
+              <label>{{ 'common.task_deadline' | translate }}</label>
+              <p>{{ request()!.task!.deadline }}</p>
+            </div>
+          </div>
+          <div>
+            <label>{{ 'common.task_description' | translate }}</label>
+            <p>{{ request()!.task!.description }}</p>
+          </div>
+          <div></div>
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="request()!.project">
+        <label>{{ 'common.project_details' | translate }}</label>
+        <div class="main-details">
+          <div class="detail-item">
+            <div class="detail-item">
+              <label>{{ 'common.project_name' | translate }}</label>
+              <p>{{ request()!.project!.name }}</p>
+            </div>
+            <div class="detail-item">
+              <label>{{ 'common.project_created_at' | translate }}</label>
+              <p>{{ request()!.project!.createdAt }}</p>
+            </div>
+            <div class="detail-item">
+              <label>{{ 'common.project_budget' | translate }}</label>
+              <p>{{ request()!.project!.totalBudget }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="request()!.signers && request()!.signers!.length > 0">
+        <label>{{ 'common.signers_details' | translate }}</label>
+        <div class="main-details">
+          <div
+            class="signer-item"
+            *ngFor="let signer of request()!.signers; let i = index; let isLast = last"
+          >
+            <div class="details-grid">
+              <div class="detail-item">
+                <label>{{ 'common.signer_name' | translate }}</label>
+                <p>{{ signersNames()[i] }}</p>
+              </div>
+              <div class="detail-item">
+                <label>{{ 'common.signer_order' | translate }}</label>
+                <p>{{ signer.order }}</p>
+              </div>
+              <div class="detail-item">
+                <label>{{ 'common.signed_at' | translate }}</label>
+                <p>{{ signer.signedAt | date : 'yyyy-MM-dd' }}</p>
+              </div>
+              <div class="detail-item">
+                <label>{{ 'common.sign_status' | translate }}</label>
+                <p>{{ signer.status }}</p>
+              </div>
+              <div class="detail-item">
+                <label>{{ 'common.signed_comment' | translate }}</label>
+                <p>{{ signer.comment }}</p>
+              </div>
+            </div>
+            <hr *ngIf="!isLast" />
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="request()!.attachments">
+        <label>{{ 'common.attachments_details' | translate }}</label>
+        <div class="main-details">
+          <div class="form-group" *ngIf="request()!.attachments">
+            <label>{{ 'common.attachments' | translate }}</label>
+            <div class="attachments">
+              <div class="attachment" *ngFor="let file of currentAttachments(); let i = index">
+                <div
+                  class="img-attach"
+                  *ngIf="
+                    file.endsWith('.jpg') ||
+                    file.endsWith('.jpeg') ||
+                    file.endsWith('.png') ||
+                    file.endsWith('.gif')
+                  "
+                >
+                  <a
+                    [href]="'https://api.kayanatdashboard.com/api' + file.trim()"
+                    target="_blank"
+                    class="attachment-link"
+                  >
+                    <img
+                      [src]="'https://api.kayanatdashboard.com/api' + file.trim()"
+                      alt="Attachment"
+                      class="attachment-img"
+                    />
+                  </a>
+                </div>
+                <div
+                  class="file-attach"
+                  *ngIf="
+                    !(
+                      file.endsWith('.jpg') ||
+                      file.endsWith('.jpeg') ||
+                      file.endsWith('.png') ||
+                      file.endsWith('.gif')
+                    )
+                  "
+                >
+                  <a
+                    [href]="'https://api.kayanatdashboard.com/api' + file.trim()"
+                    target="_blank"
+                    class="attachment-link"
+                    >{{ file.split('/').pop()?.split('_')!.slice(1).join('_') }}</a
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-secondary" (click)="close()">
+          {{ 'common.close' | translate }}
+        </button>
+        <ng-container *hasPermission="'request:update'">
+          <button class="btn btn-primary" (click)="enableEdit()">
+            {{ 'common.edit' | translate }}
+          </button>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="modal-body" *ngIf="request() && editMode()">
+      <div class="form-group">
+        <label>{{ 'common.request_details' | translate }}</label>
+        <div class="main-details">
+          <div class="details-grid">
+            <div class="form-group">
+              <label>{{ 'common.title' | translate }}</label>
+              <input [(ngModel)]="updatedTitle" />
+            </div>
+            <div class="form-group">
+              <label>{{ 'common.branch' | translate }}</label>
+              <select name="updatedBranch" [(ngModel)]="updatedBranch">
+                @for (b of branches(); track $index) {
+                <option [ngValue]="b.name">{{ b.name }}</option>
+                }
+              </select>
+            </div>
+            <div class="form-group">
+              <label>{{ 'common.department' | translate }}</label>
+              <select name="updatedDepartmentId" [(ngModel)]="updatedDepartmentId">
+                @for (d of departments(); track $index) {
+                <option [ngValue]="d.id">{{ d.name }}</option>
+                }
+              </select>
+            </div>
+            <div class="form-group">
+              <label>{{ 'common.status' | translate }}</label>
+              <select name="updatedStatus" [(ngModel)]="updatedStatus">
+                @for (status of statuses(); track $index) {
+                <option [value]="status.name">{{ status.name | translate }}</option>
+                }
+              </select>
+            </div>
+            <div class="form-group">
+              <label>{{ 'common.to' | translate }}</label>
+              <input [(ngModel)]="updatedTo" />
+            </div>
+            <div class="form-group">
+              <label>{{ 'common.assigned_to' | translate }}</label>
+              <select name="updatedAssigneeId" [(ngModel)]="updatedAssigneeId">
+                @for (e of employees(); track $index) {
+                <option [ngValue]="e.id">{{ e.name }}</option>
+                }
+              </select>
+            </div>
+            <div class="form-group">
+              <label>{{ 'common.actions' | translate }}</label>
+              <select name="updatedAction" [(ngModel)]="updatedAction">
+                @for (action of actions(); track $index) {
+                <option [value]="action.name">{{ action.name | translate }}</option>
+                }
+              </select>
+            </div>
+            <div class="form-group">
+              <label>{{ 'common.fees' | translate }}</label>
+              <input type="number" [(ngModel)]="updatedBudget" />
+            </div>
+            <!--               <div class="form-group">
+                <label>{{ 'common.count' | translate }}</label>
+                <input type="number" [(ngModel)]="updatedCount" />
+              </div> -->
+            <div class="form-group">
+              <label>{{ 'tasks.tasks' | translate }}</label>
+              <select
+                name="updatedTaskId"
+                [(ngModel)]="updatedTaskId"
+                (ngModelChange)="onTaskSelected($event)"
+                [disabled]="updatedProjectId"
+              >
+                <option [ngValue]="null">-- None --</option>
+                @for (t of tasks(); track $index) {
+                <option [ngValue]="t.id">{{ t.title }}</option>
+                }
+              </select>
+            </div>
+            <div class="form-group">
+              <label>{{ 'projects.projects' | translate }}</label>
+              <select
+                name="selectedProjectId"
+                [(ngModel)]="updatedProjectId"
+                (ngModelChange)="onProjectSelected($event)"
+                [disabled]="updatedTaskId"
+              >
+                <option [ngValue]="null">-- None --</option>
+                @for (p of projects(); track $index) {
+                <option [ngValue]="p.id">{{ p.name }}</option>
+                }
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>{{ 'common.description' | translate }}</label>
+            <textarea [(ngModel)]="updatedDescription"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>{{ 'common.attachments_details' | translate }}</label>
+        <div class="main-details">
+          <div class="form-group">
+            <input type="file" multiple (change)="handleAttachmentInput($event)" />
+            <ul *ngIf="newAttachments.length > 0">
+              <li *ngFor="let file of newAttachments; let i = index">
+                {{ file.name }}
+                <button type="button" (click)="removeNewAttachment(i)">×</button>
+              </li>
+            </ul>
+          </div>
+          <div class="form-group">
+            <div class="attachments">
+              <div class="attachment" *ngFor="let file of currentAttachments(); let i = index">
+                <div
+                  class="img-attach"
+                  *ngIf="
+                    file.endsWith('.jpg') ||
+                    file.endsWith('.jpeg') ||
+                    file.endsWith('.png') ||
+                    file.endsWith('.gif')
+                  "
+                >
+                  <a
+                    [href]="'https://api.kayanatdashboard.com/api' + file.trim()"
+                    target="_blank"
+                    class="attachment-link"
+                  >
+                    <img
+                      [src]="'https://api.kayanatdashboard.com/api' + file.trim()"
+                      alt="Attachment"
+                      class="attachment-img"
+                    />
+                  </a>
+                  <button type="button" (click)="removeCurrentAttachment(i)">×</button>
+                </div>
+                <div
+                  class="file-attach"
+                  *ngIf="
+                    !(
+                      file.endsWith('.jpg') ||
+                      file.endsWith('.jpeg') ||
+                      file.endsWith('.png') ||
+                      file.endsWith('.gif')
+                    )
+                  "
+                >
+                  <a
+                    [href]="'https://api.kayanatdashboard.com/api' + file.trim()"
+                    target="_blank"
+                    class="attachment-link"
+                    >{{ file.split('/').pop()?.split('_')!.slice(1).join('_') }}</a
+                  >
+                  <button type="button" (click)="removeCurrentAttachment(i)">×</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" (click)="cancelChanges()">
+          {{ 'common.cancel' | translate }}
+        </button>
+        <button
+          class="btn btn-success"
+          (click)="saveChanges()"
+          [disabled]="!isTaskOrProjectValid()"
+        >
+          {{ 'common.save' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+}

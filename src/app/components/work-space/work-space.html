@@ -1,0 +1,41 @@
+<div class="workspace-container">
+  <div class="workspace-hero">
+    <div>
+      <div class="hero-label">{{ 'branches.branches' | translate }}</div>
+      <h1>Choose your branch</h1>
+      <p>Select the branch tenant to continue. The selected workspace updates available modules, reports, and requests in the ERP.</p>
+    </div>
+    <button class="create-btn" (click)="createAdministration()">{{ 'branches.new_branch' | translate }}</button>
+  </div>
+
+  <div class="cards" *ngIf="branches.length; else noBranches">
+    <div class="card" *ngFor="let branch of branches" (click)="selectWorkspace(branch)">
+      <div class="card-top">
+        <div class="card-icon">
+          <img *ngIf="branch.logo" [src]="branch.logo" alt="{{ branch.name }} logo" />
+          <span *ngIf="!branch.logo">🏢</span>
+        </div>
+        <span class="status-pill">Workspace</span>
+      </div>
+
+      <h3>{{ branch.name }}</h3>
+      <p class="branch-description">Manage requests, users and reports for this branch.</p>
+
+      <div class="card-meta">
+        <span>{{ branch.modules?.length || 0 }} modules</span>
+        <span>Active</span>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #noBranches>
+    <div class="empty-state">
+      <div class="empty-icon">📂</div>
+      <h2>{{ 'branches.no_branches' | translate }}</h2>
+      <p>{{ 'branches.no_branches_description' | translate }}</p>
+      <button class="create-btn" (click)="createAdministration()">{{ 'branches.create_branch' | translate }}</button>
+    </div>
+  </ng-template>
+
+  <app-new-branch-modal #branchModal (save)="saveNewBranch($event)"></app-new-branch-modal>
+</div>

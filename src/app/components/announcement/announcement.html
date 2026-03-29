@@ -1,0 +1,53 @@
+<div id="page-tasks" class="page">
+  <div class="page-header">
+    <h1 class="page-title">{{ 'announcement.announcements' | translate }}</h1>
+    <div class="page-actions">
+      <button *hasPermission="'announcement:create'" class="btn btn-header" (click)="openNewAnnouncementModal()">{{ 'announcement.new_announcement' | translate }}</button>
+    </div>
+  </div>
+  <div *hasAnyPermission="['announcement:read', 'announcement:all']" class="table-container">
+    <div class="table-header">
+      <div class="table-title">{{ 'announcement.announcements' | translate }}</div>
+    </div>
+    <div class="table-body">
+      @if (isLoading()) {
+        <div>
+          <app-skeleton-table [rows]="4" [cols]="5"></app-skeleton-table>
+        </div>
+      }
+      @else {
+        <table>
+          <thead>
+            <tr>
+              <th>{{ 'common.title' | translate }}</th>
+              <th>{{ 'announcement.created_by' | translate }}</th>
+              <th>{{ 'common.department' | translate }}</th>
+              <th>{{ 'common.date' | translate }}</th>
+              <th>{{ 'common.actions' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (ann of annList(); track $index) {
+              <tr>
+                <td>{{ ann.title }}</td>
+                <td>{{ ann.creator?.email }}</td>
+                <td>{{ ann.department?.name }}</td>
+                <td>{{ ann.createdAt | date:'dd/MM/yyyy' }}</td>
+                <td class="table-btns">
+                  <button class="btn btn-primary btn-sm" (click)="openViewAnnouncementModal(ann)">{{ 'common.view' | translate }}</button>
+                  <i *hasPermission="'announcement:delete'" class="fa-solid fa-trash" (click)="deleteAnnouncement(ann.id)"></i>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+    <app-pagination-button [lastPageReached]="lastPageReached()" [hidden]="annList().length === 0" [itemsPerPage]="itemsPerPage()" [currentPage]="currentPage()" (pageChange)="loadAnnouncements($event)"></app-pagination-button>
+  </div>
+</div>
+<!-- Modal component -->
+<app-new-announcement-modal (save)="saveNewAnnouncement($event)"></app-new-announcement-modal>
+<app-view-announcement-modal (update)="updateAnnouncement($event)"></app-view-announcement-modal>
+<app-delete-validation-modal #deleteModal></app-delete-validation-modal>
+<app-toast></app-toast>

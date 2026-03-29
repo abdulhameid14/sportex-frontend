@@ -1,0 +1,114 @@
+<form [formGroup]="addEmployeeForm" (ngSubmit)="onSubmit()" class="add-account-page">
+  <div class="nested-page-header">
+    <h1 class="page-title">{{ 'modals.add_employee' | translate }}</h1>
+  </div>
+  <div class="cards-grid">
+    <!-- User Card -->
+    <div class="card">
+      <div class="form-group avatar-group">
+        <label>{{ 'common.photo' | translate }}</label>
+        <div class="avatar-upload" (click)="fileInput.click()">
+          <img [src]="selectedImage() || 'logo/avatar.png'" alt="avatar" />
+          <div class="overlay">
+            <i class="fa-solid fa-camera"></i>
+          </div>
+          <input #fileInput type="file" accept="image/*" (change)="onPhotoSelected($event)" hidden/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>{{ 'settings.email' | translate }}</label>
+        <div class="input-icon">
+          <i class="fa-solid fa-envelope"></i>
+          <input type="email" formControlName="email" placeholder="{{ 'settings.email_placeholder' | translate }}" />
+        </div>
+        <div *ngIf="addEmployeeForm.get('email')?.touched && addEmployeeForm.get('email')?.errors" class="error">
+          <div *ngIf="addEmployeeForm.get('email')?.errors?.['required']">{{ 'login.email_required' | translate }}</div>
+          <div *ngIf="addEmployeeForm.get('email')?.errors?.['email']">{{ 'login.valid_email' | translate }}</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>{{ 'settings.password' | translate }}</label>
+        <div class="password-wrapper">
+          <input [type]="passwordVisible ? 'text' : 'password'" formControlName="password" class="form-control custom-input" placeholder="{{ 'login.password' | translate }}"/>
+          <i (click)="togglePasswordVisibility()" [class]="passwordVisible ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
+        </div>
+        <div *ngIf="addEmployeeForm.get('password')?.touched && addEmployeeForm.get('password')?.invalid" class="error">
+          <p *ngIf="addEmployeeForm.get('password')?.errors?.['required']">{{ 'login.password_required' | translate }}</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>{{ 'common.national_id' | translate }}</label>
+        <div class="input-icon">
+          <i class="fa-solid fa-id-card"></i>
+          <input type="text" formControlName="nationalId" placeholder="{{ 'common.national_id_placeholder' | translate }}" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>{{ 'settings.role' | translate }}</label>
+        <select formControlName="roleId">
+          <option *ngFor="let r of Role()" [value]="r.id">
+            {{ r.name }}
+          </option>
+        </select>
+      </div>
+    </div>
+    <div class="card">
+      <div class="form-group">
+        <label>{{ 'settings.full_name' | translate }}</label>
+        <div class="input-icon">
+          <i class="fa-solid fa-user"></i>
+          <input type="text" formControlName="name" placeholder="{{ 'settings.full_name_placeholder' | translate }}" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>{{ 'common.phone' | translate }}</label>
+        <div class="input-icon">
+          <i class="fa-solid fa-phone"></i>
+          <input type="text" formControlName="phone" placeholder="{{ 'common.phone' | translate }}" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>{{ 'settings.position' | translate }}</label>
+        <div class="input-icon">
+          <i class="fa-solid fa-briefcase"></i>
+          <input type="text" formControlName="position" placeholder="{{ 'settings.position_placeholder' | translate }}" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group">
+          <label>{{ 'settings.salary' | translate }}</label>
+          <div class="input-icon">
+            <i class="fa-solid fa-dollar-sign"></i>
+            <input type="number" formControlName="salary" placeholder="{{ 'settings.salary_placeholder' | translate }}" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>{{ 'settings.leave_days' | translate }}</label>
+          <div class="input-icon">
+            <i class="fa-solid fa-suitcase"></i>
+            <input type="number" formControlName="vacations" placeholder="{{ 'settings.leave_days_placeholder' | translate }}" />
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>{{ 'settings.department' | translate }}</label>
+        <select formControlName="departmentId">
+          <option *ngFor="let dept of Departments()" [value]="dept.id">
+            {{ dept.name }}
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="submit-container">
+    <button type="submit" class="btn btn-primary" [disabled]="addEmployeeForm.invalid">
+      @if (isLoading()) {
+        <span class="loader"></span>
+      }
+      @else {
+        <i class="fa-solid fa-user-plus"></i> {{ 'settings.add_employee' | translate }}
+      }
+    </button>
+  </div>
+</form>
+<app-toast></app-toast>

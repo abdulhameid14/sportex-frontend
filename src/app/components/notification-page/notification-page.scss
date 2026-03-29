@@ -1,0 +1,40 @@
+app-pagination-button{
+  margin: 2px 0px;
+}
+
+.fa-solid.fa-trash {
+  color: rgb(0, 0, 0);
+  cursor: pointer;
+  font-size: 15px;
+  margin-left: 10px;
+}
+
+.fa-solid.fa-trash:hover {
+  color: rgb(173, 0, 0);
+}
+.signers-group {
+  display: flex;
+  flex-direction: column;
+  max-height: 150px;
+}
+
+.signers-list {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f3f3f3;
+  overflow-y: auto;
+}
+
+.signers-option input {
+  width: auto;
+  padding: 0px;
+}
+
+.submit-container {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+}

@@ -1,0 +1,33 @@
+@if (isOpen()) {
+  <div class="modal-overlay" (click)="close()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <button class="close-btn" (click)="close()">×</button>
+
+      <div class="modal-header">
+        <h2>{{ 'modals.submit_task' | translate }}</h2>
+      </div>
+
+      <div class="modal-body" *ngIf="task()">
+        <div class="form-group">
+          <label>{{ 'common.attachments_details' | translate }}</label>
+          <div class="main-details">
+            <div class="form-group">
+              <label>{{ 'common.submission_attachments' | translate }}</label>
+              <input type="file" multiple (change)="handleSubAttachmentInput($event)" />
+              <ul *ngIf="updatedSubAttachments.length > 0">
+                <li *ngFor="let file of updatedSubAttachments; let i = index">
+                  {{ file.name }}
+                  <button type="button" (click)="removeNewSubAttachment(i)">×</button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" (click)="cancelChanges()">{{ 'common.cancel' | translate }}</button>
+          <button class="btn btn-success" [disabled]="updatedSubAttachments.length === 0" (click)="saveChanges()">{{ 'common.save' | translate }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

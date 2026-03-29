@@ -1,0 +1,19 @@
+<div class="app-layout">
+  @if (hideLayout) {
+  <router-outlet></router-outlet>
+  } @else { @if (isHeaderVisible) {
+  <app-header (toggleSidebar)="toggleSidebar()"></app-header>
+  }
+  <div class="app-body">
+    @if (isSidebarVisible) {
+    <app-sidebar></app-sidebar>
+    }
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+  <!-- Overlay for mobile when sidebar is open -->
+  @if (isSmallScreen && isSidebarVisible) {
+  <div class="overlay" (click)="toggleSidebar()"></div>
+  } }
+</div>

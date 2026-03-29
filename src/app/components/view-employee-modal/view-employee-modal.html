@@ -1,0 +1,260 @@
+@if (isOpen()) {
+  <div class="modal-overlay" (click)="close()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <button class="close-btn" (click)="close()">×</button>
+      <div class="modal-header">
+        <h2>{{ 'modals.view_employee' | translate }}</h2>
+      </div>
+
+      <div class="modal-body view-mode" *ngIf="employee() && !editMode()">
+        <div class="meta-header">
+          <h1 class="main-title">{{ employee()?.name }}</h1>
+          <div class="view-badges">
+            <span *ngIf="employee()?.active === true" class="badge status">{{ 'status.active' | translate }}</span>
+            <span *ngIf="employee()?.active === false" class="badge status">{{ 'status.inactive' | translate }}</span>
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="employee()?.photo">
+          <div class="attachments">
+            <div class="attachment">
+              <a [href]="'https://api.kayanatdashboard.com/api/' + employee()?.photo" target="_blank" rel="noopener noreferrer"><img [src]="'https://api.kayanatdashboard.com/api/' + employee()?.photo" alt="Photo" class="attachment-img"/></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>{{ 'common.employee_details' | translate }}</label>
+          <div class="main-details">
+            <div class="details-grid">
+              <div class="detail-item">
+                <label>{{ 'common.name' | translate }}:</label>
+                <p>{{ employee()?.name }}</p>
+              </div>
+              <div class="detail-item">
+                <label>{{ 'common.email' | translate }}:</label>
+                <p>{{ employee()?.user?.email }}</p>
+              </div>
+              <div class="detail-item">
+                <label>{{ 'common.national_id' | translate }}:</label>
+                <p>{{ employee()?.user?.nationalId }}</p>
+              </div>
+              <div class="detail-item">
+                <label>{{ 'common.position' | translate }}:</label>
+                <p>{{ employee()?.position }}</p>
+              </div>
+              <div class="detail-item">
+                <label>{{ 'common.salary' | translate }}:</label>
+                <p>{{ employee()?.salary }}</p>
+              </div>
+              <div class="detail-item">
+                <label>{{ 'common.vacations' | translate }}:</label>
+                <p>{{ employee()?.vacations }}</p>
+              </div>
+              <div class="detail-item">
+                <label>{{ 'common.department' | translate }}:</label>
+                <p>{{ employee()?.department?.name }}</p>
+              </div>
+              <div class="detail-item">
+                <label>{{ 'common.branch' | translate }}:</label>
+                <p>{{ employee()?.tenantId }}</p>
+              </div>
+              <div class="detail-item">
+                <label>{{ 'common.phone' | translate }}:</label>
+                <p>{{ employee()?.phone }}</p>
+              </div>
+              <div class="detail-item">
+                <label>{{ 'common.joined_at' | translate }}:</label>
+                <p>{{ employee()?.createdAt | date:'yyyy-MM-dd' }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="employee()!.assignedTasks && employee()!.assignedTasks!.length > 0">
+          <label>{{ 'common.assigned_tasks' | translate }}</label>
+          <div class="main-details">
+            <ng-container  *ngFor="let task of employee()?.assignedTasks; let last = last">
+              <span class="badge status">{{ 'status.' + task.status | translate }}</span>
+              <div class="details-grid">
+                <div class="detail-item">
+                  <label>{{ 'common.title' | translate }}</label>
+                  <p>{{ task.title }}</p>
+                </div>
+                <div class="detail-item">
+                  <label>{{ 'common.created_at' | translate }}</label>
+                  <p>{{ task.createdAt | date: 'yyyy-MM-dd' }}</p>
+                </div>
+                <div class="detail-item">
+                  <label>{{ 'common.deadline' | translate }}</label>
+                  <p>{{ task.deadline | date: 'yyyy-MM-dd' }}</p>
+                </div>
+              </div>
+              <div>
+                <label>{{ 'common.description' | translate }}</label>
+                <p>{{ task.description }}</p>
+              </div>
+              <hr *ngIf="!last" class="seperator"/>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="employee()?.createdTasks && employee()?.createdTasks!.length > 0">
+          <label>{{ 'common.created_tasks' | translate }}</label>
+          <div class="main-details">
+            <ng-container  *ngFor="let task of employee()?.createdTasks; let last = last">
+              <span class="badge status">{{ 'status.' + task.status | translate }}</span>
+              <div class="details-grid">
+                <div class="detail-item">
+                  <label>{{ 'common.title' | translate }}</label>
+                  <p>{{ task.title }}</p>
+                </div>
+                <div class="detail-item">
+                  <label>{{ 'common.created_at' | translate }}</label>
+                  <p>{{ task.createdAt | date: 'yyyy-MM-dd' }}</p>
+                </div>
+                <div class="detail-item">
+                  <label>{{ 'common.deadline' | translate }}</label>
+                  <p>{{ task.deadline | date: 'yyyy-MM-dd' }}</p>
+                </div>
+              </div>
+              <div>
+                <label>{{ 'common.description' | translate }}</label>
+                <p class="description-box">{{ task.description }}</p>
+              </div>
+              <hr *ngIf="!last" class="seperator"/>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="employee()?.userPerformance!.length > 0">
+          <label>{{ 'common.employee_reviews' | translate }}</label>
+          <div class="main-details">
+            <div class="emp-performance">
+              <div class="emp-performance-header">
+                <h3>{{ 'modals.performance_reviews' | translate }}</h3>
+              </div>
+              <div *ngIf="employee()?.userPerformance; else noPerformances">
+                <div class="performance-container">
+                  <div class="performance-card" *ngFor="let performance of employee()?.userPerformance">
+                    <div class="perf-header">
+                      <div><strong>{{ 'common.from' | translate }}:</strong> {{ performance.feedback![0].from }}</div>
+                      <div><strong>{{ 'common.reviewPeriod' | translate }}:</strong> {{ performance.reviewPeriod }}</div>
+                    </div>
+                    <div class="rating-badge">{{ getRatingName(performance.rating) | translate }}</div>
+                    <div class="perf-section">
+                      <h4>{{ 'common.goals' | translate }}</h4>
+                      <div class="goal-card" *ngFor="let goal of performance.goals">
+                        <div><strong>{{ 'common.title' | translate }}: </strong>{{ goal.title }}</div>
+                        <hr class="seperator"/>
+                        <div><strong>{{ 'common.description' | translate }}: </strong>{{ goal.description }}</div>
+                        <hr class="seperator"/>
+                        <div class="goal-status"><strong>{{ 'common.status' | translate }}: </strong>{{ goal.status | translate }}</div>
+                        <hr class="seperator"/>
+                        <div class="goal-comment"><strong>{{ 'common.comments' | translate }}: </strong>{{ goal.comments }}</div>
+                      </div>
+                    </div>
+                    <div class="perf-section">
+                      <h4>{{ 'common.feedback' | translate }}</h4>
+                      <div *ngFor="let feedback of performance.feedback" class="feedback-card">
+                        <p>{{ feedback.comments }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <ng-template #noPerformances>
+                <p class="no-performance">{{ 'modals.no_performance_reviews' | translate }}</p>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn btn-secondary" (click)="close()">{{ 'common.close' | translate }}</button>
+          <ng-container *hasPermission="'employee:update'">
+            <button class="btn btn-primary" (click)="enableEdit()">{{ 'common.edit' | translate }}</button>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="modal-body" *ngIf="employee() && editMode()">
+        <div class="form-group">
+          <label>{{ 'common.employee_details' | translate }}</label>
+          <div class="main-details">
+            <div class="details-grid">
+              <div class="form-group">
+                <label>{{ 'common.email' | translate }}</label>
+                <input type="email" name="email" [(ngModel)]="updatedEmail" #emailCtrl="ngModel" email/>
+                <div class="error" *ngIf="emailCtrl.invalid && (emailCtrl.dirty || emailCtrl.touched)">
+                  <small *ngIf="emailCtrl.errors?.['email']">Invalid email format</small>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>{{ 'settings.password' | translate }}</label>
+                <div class="input-icon">
+                  <input [type]="passwordVisible ? 'text' : 'password'" [(ngModel)]="updatedPassword" placeholder="{{ 'login.password' | translate }}"/>
+                  <i (click)="togglePasswordVisibility()" class="toggle-password" [class]="passwordVisible ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>{{ 'common.national_id' | translate }}</label>
+                <input type="text" [(ngModel)]="updatedNationalId" />
+              </div>
+              <div class="form-group">
+                <label>{{ 'common.role' | translate }}</label>
+                <select name="role" [(ngModel)]="updatedRoleId">
+                  @for (role of roleList(); track $index) {
+                    <option name="role" [ngValue]="role.id">{{ role.name }}</option>
+                  }
+                </select>
+              </div>
+              <div class="form-group">
+                <label>{{ 'common.name' | translate }}</label>
+                <input type="text" [(ngModel)]="updatedName" />
+              </div>
+              <div class="form-group">
+                <label>{{ 'common.position' | translate }}</label>
+                <input type="text" [(ngModel)]="updatedPosition" />
+              </div>
+              <div class="form-group">
+                <label>{{ 'common.salary' | translate }}</label>
+                <input type="number" [(ngModel)]="updatedSalary" />
+              </div>
+              <div class="form-group">
+                <label>{{ 'common.vacations' | translate }}</label>
+                <input type="number" [(ngModel)]="updatedVacation" />
+              </div>
+              <div class="form-group">
+                <label>{{ 'common.phone' | translate }}</label>
+                <input type="text" [(ngModel)]="updatedPhone" />
+              </div>
+              <div class="form-group">
+                <label>{{ 'common.branch' | translate }}</label>
+                <select name="branch" [(ngModel)]="updatedBranch" required>
+                  @for (b of branchs(); track $index) {
+                    <option [ngValue]="b.name">{{ b.name }}</option>
+                  }
+                </select>
+              </div>
+              <div class="form-group">
+                <label>{{ 'common.department' | translate }}</label>
+                <select name="department" [(ngModel)]="updatedDepartmentId" required>
+                  @for (d of departments(); track $index) {
+                    <option [ngValue]="d.id">{{ d.name }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn btn-secondary" (click)="cancelChanges()">{{ 'common.cancel' | translate }}</button>
+          <button class="btn btn-success" [disabled]="emailCtrl.invalid" (click)="saveChanges()">{{ 'common.save' | translate }}</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+}

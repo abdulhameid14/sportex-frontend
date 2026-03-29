@@ -1,0 +1,66 @@
+@if (isOpen()) {
+  <div class="modal-overlay" (click)="close()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ 'modals.add_role' | translate }}</h2>
+        <button class="close-btn" (click)="close()">×</button>
+      </div>
+
+      <div class="modal-body">
+        <form #roleForm="ngForm" (ngSubmit)="submit(roleForm)">
+          <div class="form-group">
+            <label>{{ 'common.role_details' | translate }}</label>
+            <div class="main-details">
+              <div class="form-group">
+                <label>{{ 'common.name' | translate }}</label>
+                <input type="text" name="name" ngModel required />
+              </div>
+
+              <div class="form-group permissions-group">
+                <label>{{ 'modals.permissions' | translate }}</label>
+                <div class="permissions-list">
+
+                  <!-- Admin permission at top -->
+                  <label class="permissions-option" *ngIf="adminPermission()">
+                    <input
+                      type="checkbox"
+                      class="form-check-input"
+                      [value]="adminPermission()!.id"
+                      [checked]="isPermissionSelected(adminPermission()!)"
+                      (change)="onPermissionToggle($event, adminPermission()!)"
+                    />
+                    Admin ({{ adminPermission()!.description }})
+                  </label>
+
+                  <!-- Other permissions grouped by module -->
+                  <ng-container *ngFor="let module of moduleKeys()">
+                    <div class="module-group" *ngIf="module !== 'admin'">
+                      <h4 class="module-title">{{ module | titlecase }}</h4>
+                      <label class="permissions-option" *ngFor="let perm of groupedPermissions()[module]">
+                        <input
+                          type="checkbox"
+                          class="form-check-input"
+                          [value]="perm.id"
+                          [checked]="isPermissionSelected(perm)"
+                          [disabled]="isCheckboxDisabled(perm)"
+                          (change)="onPermissionToggle($event, perm)"
+                        />
+                        {{ perm.description }}
+                      </label>
+                    </div>
+                  </ng-container>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button type="submit" class="btn btn-primary" [disabled]="roleForm.invalid || !permsList().length">{{ 'common.save' | translate }}</button>
+            <button type="button" class="btn btn-secondary" (click)="close()">{{ 'common.cancel' | translate }}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+}

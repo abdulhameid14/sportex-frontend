@@ -1,0 +1,170 @@
+/* Cards */
+.card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.card-header {
+  background: #f8f9fa;
+  padding: 15px 20px;
+  border-bottom: 1px solid #eee;
+  font-weight: bold;
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Strategy Page */
+.strategy-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.strategy-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.strategy-item {
+  width: 90%;
+  margin-top: 15px;
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  transition: transform 0.25s ease, box-shadow 0.25s ease; // smooth animation
+  &:hover {
+    transform: scale(1); // lift & zoom
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  }
+}
+
+.strategy-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.strategy-title {
+  color: #2c3e50;
+  font-size: 18px;
+  margin: 0;
+  @media (max-width: 400px) {
+    font-size: 14px;
+  }
+}
+
+.strategy-description {
+  color: #383838;
+  margin-bottom: 15px;
+  @media (max-width: 400px) {
+    font-size: 10px;
+  }
+}
+
+.strategy-goals {
+  margin-bottom: 10px;
+}
+
+.strategy-goals-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.strategy-goals-list {
+  margin: 10px 0px;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 5px;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.goal-chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  white-space: nowrap;
+  background: #e0e4e6;
+  padding: 0px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  gap: 10px;
+  span{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: x-large;
+  }
+}
+
+.strategy-progress {
+  margin-bottom: 15px;
+}
+
+.progress-bar {
+  background: #dde4e6;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 10px 0px;
+}
+
+.progress-fill {
+  background: #061f63;
+  height: 15px;
+  border-radius: 10px;
+  width: 30%;
+}
+
+.progress-label {
+  font-size: 12px;
+  color: #383838;
+  margin-top: 5px;
+}
+
+.strategy-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #383838;
+  @media (max-width: 320px) {
+    font-size: 10px;
+  }
+}
+
+.strategy-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.strategy-meta button{
+  @media (max-width: 400px) {
+    font-size: 10px;
+    padding: 7px 10px;
+    @media (max-width: 350px) {
+      max-width: 50px;
+    }
+  }
+}
+
+app-pagination-button{
+  margin: 2px 0px;
+}

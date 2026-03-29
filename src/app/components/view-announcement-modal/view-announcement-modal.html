@@ -1,0 +1,150 @@
+@if (isOpen()) {
+  <div class="modal-overlay" (click)="close()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <button class="close-btn" (click)="close()">×</button>
+      <div class="modal-header">
+        <h2>{{ 'modals.view_announcement' | translate }}</h2>
+      </div>
+
+      <div class="modal-body view-mode" *ngIf="ann() && !editMode()">
+        <div class="meta-header">
+          <h1 class="main-title">{{ ann()!.title }}</h1>
+          <div class="view-badges">
+            <span class="badge status" *ngIf="ann()!.active">{{ 'common.active' | translate }}</span>
+            <span class="badge status" *ngIf="!ann()!.active">{{ 'common.inactive' | translate }}</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>{{ 'common.announcement_details' | translate }}</label>
+          <div class="main-details">
+            <div class="details-grid">
+              <div class="detail-item">
+                <label>{{ 'common.branch' | translate }}</label>
+                <p>{{ ann()!.tenantId }}</p>
+              </div>
+              <div class="detail-item">
+                <label>{{ 'common.department' | translate }}</label>
+                <p>{{ ann()!.department?.name }}</p>
+              </div>
+              <div class="detail-item">
+                <label>{{ 'common.created_by' | translate }}</label>
+                <p>{{ ann()!.creator?.email }}</p>
+              </div>
+              <div class="detail-item">
+                <label>{{ 'common.created_at' | translate }}</label>
+                <p>{{ ann()!.createdAt | date: 'yyyy-MM-dd' }}</p>
+              </div>
+            </div>
+            <div>
+              <label>{{ 'common.content' | translate }}</label>
+              <div class="description-box">{{ ann()!.content }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="ann()!.attachments">
+          <label>{{ 'common.attachments_details' | translate }}</label>
+          <div class="main-details">
+            <div class="form-group" *ngIf="ann()!.attachments">
+              <label>{{ 'common.attachments' | translate }}</label>
+              <div class="attachments">
+                <div class="attachment" *ngFor="let file of currentAttachments(); let i = index">
+                  <div class="img-attach" *ngIf="file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png') || file.endsWith('.gif')">
+                    <a [href]="'https://api.kayanatdashboard.com/api/' + file.trim()" target="_blank" class="attachment-link">
+                      <img [src]="'https://api.kayanatdashboard.com/api/' + file.trim()" alt="Attachment" class="attachment-img"/>
+                    </a>
+                  </div>
+                  <div class="file-attach" *ngIf="!(file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png') || file.endsWith('.gif'))">
+                    <a [href]="'https://api.kayanatdashboard.com/api/' + file.trim()" target="_blank" class="attachment-link">{{ file.split('/').pop()?.split('_')!.slice(1).join('_') }}</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn btn-secondary" (click)="close()">{{ 'common.close' | translate }}</button>
+          <ng-container *hasPermission="'announcement:update'">
+            <button class="btn btn-primary" (click)="enableEdit()">{{ 'common.edit' | translate }}</button>
+          </ng-container>
+        </div>
+      </div>
+
+
+      <div class="modal-body" *ngIf="ann() && editMode()">
+        <div class="form-group">
+          <label>{{ 'common.announcement_details' | translate }}</label>
+          <div class="main-details">
+            <div class="form-group">
+              <label>{{ 'common.title' | translate }}</label>
+              <input [(ngModel)]="updatedTitle" />
+            </div>
+            <div class="form-group">
+              <label>{{ 'common.content' | translate }}</label>
+              <textarea [(ngModel)]="updatedContent"></textarea>
+            </div>
+            <div class="form-group">
+              <label>{{ 'common.branch' | translate }}</label>
+              <select name="branch" [(ngModel)]="updatedBranch" required>
+                @for (d of branchs(); track $index) {
+                  <option [ngValue]="d.name">{{ d.name }}</option>
+                }
+              </select>
+            </div>
+            <div class="form-group">
+              <label>{{ 'common.department' | translate }}</label>
+              <select name="department" [(ngModel)]="updatedDepartmentId" required>
+                @for (d of departments(); track $index) {
+                  <option [ngValue]="d.id">{{ d.name }}</option>
+                }
+              </select>
+            </div>
+            <div class="form-group">
+              <label>{{ 'common.active' | translate }}</label>
+              <input class="form-check-input" type="checkbox" [(ngModel)]="updatedActive" />
+              {{ updatedActive ? ( 'common.yes' | translate ) : ( 'common.no' | translate ) }}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>{{ 'common.attachments_details' | translate }}</label>
+          <div class="main-details">
+            <div class="form-group">
+              <input type="file" multiple (change)="handleAttachmentInput($event)" />
+              <ul *ngIf="newAttachments.length > 0">
+                <li *ngFor="let file of newAttachments; let i = index">
+                  {{ file.name }}
+                  <button type="button" (click)="removeNewAttachment(i)">×</button>
+                </li>
+              </ul>
+            </div>
+            <div class="form-group" *ngIf="ann()!.attachments">
+              <div class="attachments">
+                <div class="attachment" *ngFor="let file of currentAttachments(); let i = index">
+                  <div class="img-attach" *ngIf="file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png') || file.endsWith('.gif')">
+                    <a [href]="'https://api.kayanatdashboard.com/api/' + file.trim()" target="_blank" class="attachment-link">
+                      <img [src]="'https://api.kayanatdashboard.com/api/' + file.trim()" alt="Attachment" class="attachment-img"/>
+                    </a>
+                    <button type="button" (click)="removeCurrentAttachment(i)">×</button>
+                  </div>
+                  <div class="file-attach" *ngIf="!(file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png') || file.endsWith('.gif'))">
+                    <a [href]="'https://api.kayanatdashboard.com/api/' + file.trim()" target="_blank" class="attachment-link">{{ file.split('/').pop()?.split('_')!.slice(1).join('_') }}</a>
+                    <button type="button" (click)="removeCurrentAttachment(i)">×</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn btn-secondary" (click)="cancelChanges()">{{ 'common.cancel' | translate }}</button>
+          <button class="btn btn-success" (click)="saveChanges()">{{ 'common.save' | translate }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

@@ -1,0 +1,25 @@
+@if (isOpen) {
+  <div class="modal-overlay" (click)="close()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ 'modals.chat_with' | translate }}</h2>
+        <button class="close-btn" (click)="close()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="userSelect">{{ 'modals.select_user' | translate }}</label>
+          <select id="userSelect" [(ngModel)]="selectedUser" class="form-control">
+            <option [ngValue]="null" disabled>Select a user</option>
+            <option *ngFor="let u of users" [ngValue]="u">
+              {{ u.username || u.name || u.email }}
+            </option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" (click)="close()">{{ 'common.cancel' | translate }}</button>
+          <button class="btn btn-primary" (click)="submit()">{{ 'modals.create' | translate }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

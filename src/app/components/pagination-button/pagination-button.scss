@@ -1,0 +1,40 @@
+.pagination {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+button {
+  font-weight: 800;
+  padding: 4px 10px;
+  border: 1px solid #060058;
+  border-radius: 15px;
+  background: rgb(149, 188, 211);
+  color: #060058;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button.active {
+  background: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+button:hover,
+button.active:hover {
+  background: rgb(112, 174, 209);
+  color: #060058;
+}
+
+button:disabled {
+  opacity: 0.8;
+  cursor: not-allowed;
+  background: #b9b9b9;
+  color: #222222;
+}
+
+button:hover:not(:disabled) {
+  background: #b9b9b9;
+  color: #222222;
+}

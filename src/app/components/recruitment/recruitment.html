@@ -1,0 +1,65 @@
+<div id="page-tasks" class="page">
+  <div class="page-header">
+    <h1 class="page-title">{{ 'recruitment.recruitments' | translate }}</h1>
+    <div class="page-actions">
+      <button *hasPermission="'recruitment:create'" class="btn btn-header" (click)="openNewRecruitmentModal()">{{ 'recruitment.new_recruitment' | translate }}</button>
+    </div>
+  </div>
+  <div *hasAnyPermission="['recruitment:read', 'recruitment:all']" class="table-container">
+    <div class="table-header">
+      <div class="table-title">{{ 'recruitment.recruitments' | translate }}</div>
+    </div>
+    <div class="table-body">
+      @if (isLoading()) {
+        <div>
+          <app-skeleton-table [rows]="4" [cols]="5"></app-skeleton-table>
+        </div>
+      }
+      @else {
+      <table>
+        <thead>
+          <tr>
+            <th>{{ 'common.position' | translate }}</th>
+            <th>{{ 'common.date' | translate }}</th>
+            <th>{{ 'common.status' | translate }}</th>
+            <th>{{ 'common.created_by' | translate }}</th>
+            <th>{{ 'common.actions' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (rec of recruitmentList(); track $index) {
+            <tr>
+              <td>{{ rec.position }}</td>
+              <td>{{ rec.createdAt | date:'dd/MM/yyyy' }}</td>
+              <td>
+                @if (rec.status == recruitmentStatus.OPEN) {
+                  <span class="status-badge status-approved">{{ 'status.open' | translate }}</span>
+                } @else if (rec.status == recruitmentStatus.FILLED) {
+                  <span class="status-badge status-draft">{{ 'status.filled' | translate }}</span>
+                } @else {
+                  <span class="status-badge status-rejected">{{ 'status.closed' | translate }}</span>
+                }
+              </td>
+              <td>{{ rec.createdBy!.email }}</td>
+              <td class="table-btns">
+                <button class="btn btn-primary btn-sm" (click)="openViewRecruitmentModal(rec)">{{ 'common.view' | translate }}</button>
+                @if (rec.status == recruitmentStatus.OPEN) {
+                  <i *hasPermission="'recruitment:update'" class="fa-solid fa-briefcase" (click)="openAddApplicationModal(rec)"></i>
+                }
+                <i *hasPermission="'recruitment:delete'" class="fa-solid fa-trash" (click)="deleteRecruitment(rec.id)"></i>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      }
+    </div>
+      <app-pagination-button [lastPageReached]="lastPageReached()" [hidden]="recruitmentList().length === 0" [itemsPerPage]="itemsPerPage()" [currentPage]="currentPage()" (pageChange)="loadRecruitments($event)"></app-pagination-button>
+  </div>
+</div>
+<!-- Modal component -->
+<app-new-recruitment-modal (save)="saveNewRecruitment($event)"></app-new-recruitment-modal>
+<app-view-recruitment-modal (update)="updateRecruitment($event)"></app-view-recruitment-modal>
+<app-add-application-modal (save)="addApplication($event)"></app-add-application-modal>
+<app-delete-validation-modal #deleteModal></app-delete-validation-modal>
+<app-toast></app-toast>

@@ -1,0 +1,46 @@
+@if (isOpen()) {
+  <div class="modal-overlay" (click)="close()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <button class="close-btn" (click)="close()">×</button>
+      <div class="modal-header">
+        <h2>{{ 'modals.view_department' | translate }}</h2>
+      </div>
+
+      <div class="modal-body view-mode" *ngIf="department() && !editMode()">
+        <div class="meta-header">
+          <h1 class="main-title">{{ department()!.name }}</h1>
+        </div>
+        <div class="form-group">
+          <label>{{ 'common.department_employees' | translate }}</label>
+          <div class="main-details">
+            <div class="employee-item" *ngFor="let emp of department()!.employees; let i = index; let last = last">
+              <div class="form-group">
+                <label>{{ 'common.name' | translate }}</label>
+                - {{ emp.name }}
+              </div>
+              <hr *ngIf="!last" />
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" (click)="close()">{{ 'common.close' | translate }}</button>
+          <ng-container *hasPermission="'department:update'">
+            <button class="btn btn-primary" (click)="enableEdit()">{{ 'common.edit' | translate }}</button>
+          </ng-container>
+        </div>
+      </div>
+
+
+      <div class="modal-body" *ngIf="department() && editMode()">
+        <div class="form-group">
+          <label>{{ 'common.name' | translate }}</label>
+          <input [(ngModel)]="department()!.name" />
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" (click)="cancelChanges()">{{ 'common.cancel' | translate }}</button>
+          <button class="btn btn-success" (click)="saveChanges()">{{ 'common.save' | translate }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

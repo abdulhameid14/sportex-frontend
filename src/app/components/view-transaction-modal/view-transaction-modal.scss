@@ -1,0 +1,38 @@
+.delete-btn,
+.attachment .delete-btn,
+.attachment button {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: #ff4d4d;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  opacity: 0;
+  transition: opacity 0.2s ease, background 0.2s;
+}
+
+.attachment {
+  position: relative;
+  display: inline-block;
+  margin: 5px;
+}
+
+.attachment .delete-btn,
+.attachment button {
+  opacity: 1;
+}
+
+.delete-btn,
+.attachment button {
+  background: #e60000;
+}

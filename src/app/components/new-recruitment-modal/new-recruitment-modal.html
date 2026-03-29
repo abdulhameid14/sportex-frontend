@@ -1,0 +1,85 @@
+@if (isOpen()) {
+  <div class="modal-overlay" (click)="close()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ 'modals.add_recruitment' | translate }}</h2>
+        <button class="close-btn" (click)="close()">×</button>
+      </div>
+      <div class="modal-body">
+        <form #recForm="ngForm" (ngSubmit)="submit(recForm)">
+
+
+          <div class="form-group">
+            <label>{{ 'common.recruitment_details' | translate }}</label>
+            <div class="main-details">
+              <div class="details-grid">
+                <div class="form-group">
+                  <label>{{ 'common.position' | translate }}</label>
+                  <input type="text" name="position" ngModel required />
+                </div>
+                <div class="form-group">
+                  <label>{{ 'common.department' | translate }}</label>
+                  <select name="department" ngModel required>
+                    @for (d of departments(); track $index) {
+                      <option [ngValue]="d">{{ d.name }}</option>
+                    }
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>{{ 'common.description' | translate }}</label>
+                <textarea name="description" rows="3" ngModel required></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>{{ 'common.requirements_details' | translate }}</label>
+            <div class="main-details">
+              <div class="form-group">
+                <label>{{ 'common.requirements' | translate }}</label>
+                <div class="form-list">
+                  <div class="requirments-item" *ngFor="let req of requirments; let i = index; let last = last">
+                    <div class="form-group">
+                      <label>{{ 'common.title' | translate }}</label>
+                      <input type="text" [(ngModel)]="req.title" name="requirmentTitle{{i}}" required />
+                    </div>
+                    <div class="form-group">
+                      <label>{{ 'common.description' | translate }}</label>
+                      <textarea [(ngModel)]="req.description" name="requirmentsDesc{{i}}" rows="2" required></textarea>
+                    </div>
+                    <div class="form-group">
+                      <label class="mandatory-option">
+                        <input type="checkbox" class="form-check-input" [(ngModel)]="req.mandatory" name="mandatory{{i}}" />
+                        {{ 'common.mandatory' | translate }}
+                      </label>
+                    </div>
+                    <button class="btn delete-btn btn-sm" [disabled]="requirments.length <= 1" (click)="removeRequirment(i)"><i class="fa-solid fa-trash"></i></button>
+                    <hr  *ngIf="!last" />
+                  </div>
+                </div>
+                <button type="button" class="btn btn-success btn-sm" (click)="addRequirment()">{{ 'modals.add' | translate }}</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>{{ 'common.attachments' | translate }}</label>
+            <input type="file" multiple (change)="handleFileInput($event)" />
+            <ul *ngIf="attachments.length > 0">
+              <li *ngFor="let file of attachments; let i = index">
+                {{ file.name }}
+                <button type="button" (click)="removeAttachment(i)">×</button>
+              </li>
+            </ul>
+          </div>
+
+          <div class="modal-actions">
+            <button type="submit" class="btn btn-primary" [disabled]="recForm.invalid">{{ 'common.save' | translate }}</button>
+            <button type="button" class="btn btn-secondary" (click)="close()">{{ 'common.cancel' | translate }}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+}

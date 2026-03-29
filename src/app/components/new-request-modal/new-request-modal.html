@@ -1,0 +1,113 @@
+@if (isOpen()) {
+  <div class="modal-overlay" (click)="close()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ 'modals.add_request' | translate }}</h2>
+        <button class="close-btn" (click)="close()">×</button>
+      </div>
+      <div class="modal-body">
+        <form #requestForm="ngForm" (ngSubmit)="submit(requestForm)">
+
+          <div class="form-group">
+            <label>{{ 'common.request_details' | translate }}</label>
+            <div class="main-details">
+              <div class="details-grid">
+                <div class="form-group">
+                  <label>{{ 'common.title' | translate }}</label>
+                  <input type="text" name="title" ngModel required />
+                </div>
+                <div class="form-group">
+                  <label>{{ 'common.assigned_to' | translate }}</label>
+                  <select name="assigneeEmployeeId" ngModel required>
+                    @for (e of employees(); track $index) {
+                      <option [ngValue]="e.id">{{ e.name }}</option>
+                    }
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>{{ 'common.actions' | translate }}</label>
+                  <select name="action" ngModel required>
+                    @for (action of actions(); track $index) {
+                      <option [value]="action.name">{{ action.name | translate }}</option>
+                    }
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>{{ 'modals.request_type' | translate }}</label>
+                  <select name="reqType" ngModel required>
+                    <option *ngFor="let t of requestTypes()" [ngValue]="t">{{ t.name }}</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>{{ 'common.department' | translate }}</label>
+                  <select name="departmentId" ngModel required>
+                    @for (d of departments(); track $index) {
+                      <option [ngValue]="d.id">{{ d.name }}</option>
+                    }
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>{{ 'common.fees' | translate }}</label>
+                  <input type="number" name="budget" ngModel required />
+                </div>
+                <div class="form-group">
+                  <label>{{ 'common.fees_status' | translate }}</label>
+                  <select name="feesStatus" required [(ngModel)]="feesStatus">
+                    <option [value]="'expenses'">{{ 'common.expenses' | translate }}</option>
+                    <option [value]="'income'">{{ 'common.income' | translate }}</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>{{ 'common.to' | translate }}</label>
+                  <input name="to" ngModel />
+                </div>
+<!--                 <div class="form-group">
+                  <label>{{ 'common.count' | translate }}</label>
+                  <input type="number" name="count" ngModel />
+                </div> -->
+                <div class="form-group">
+                  <label>{{ 'tasks.tasks' | translate }}</label>
+                  <select name="taskId" ngModel (ngModelChange)="onTaskSelected($event)" [disabled]="selectedProjectId">
+                    <option [ngValue]="null">-- None --</option>
+                    @for (t of tasks(); track $index) {
+                      <option [ngValue]="t.id">{{ t.title }}</option>
+                    }
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>{{ 'projects.projects' | translate }}</label>
+                  <select name="projectId" ngModel (ngModelChange)="onProjectSelected($event)" [disabled]="selectedTaskId">
+                    <option [ngValue]="null">-- None --</option>
+                    @for (p of projects(); track $index) {
+                      <option [ngValue]="p.id">{{ p.name }}</option>
+                    }
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>{{ 'common.description' | translate }}</label>
+                <textarea name="description" ngModel required></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>{{ 'common.attachments' | translate }}</label>
+            <input type="file" multiple (change)="handleAttachmentsInput($event)" />
+            <ul *ngIf="attachments.length > 0">
+              <li *ngFor="let file of attachments; let i = index">
+                {{ file.name }}
+                <button type="button" (click)="removeAttachment(i)">×</button>
+              </li>
+            </ul>
+          </div>
+
+          <div class="modal-actions">
+            <button type="submit" class="btn btn-primary" [disabled]="requestForm.invalid || !isTaskOrProjectValid()">{{ 'common.save' | translate}}</button>
+            <button type="button" class="btn btn-secondary" (click)="close()">{{ 'common.cancel' | translate}}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+}

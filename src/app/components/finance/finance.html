@@ -1,0 +1,55 @@
+<div id="page-finance" class="page">
+  <div class="page-header">
+    <h1 class="page-title">{{ 'finance.finance' | translate }}</h1>
+    <div class="page-actions">
+      <button *hasPermission="'report:create'" class="btn btn-header" (click)="openNewTransactionModal()">{{ 'finance.new_transaction' | translate }}</button>
+    </div>
+  </div>
+    <div *hasAnyPermission="['report:all', 'report:read']" class="table-container">
+      <div class="table-header">
+        <div class="table-title">{{ 'finance.transactions' | translate }}</div>
+      </div>
+      <div class="table-body">
+        @if (isLoading()) {
+          <div>
+            <app-skeleton-table [rows]="4" [cols]="6"></app-skeleton-table>
+          </div>
+        }
+        @else {
+        <table>
+          <thead>
+            <tr>
+              <th>{{ 'common.title' | translate }}</th>
+              <th>{{ 'common.creator' | translate }}</th>
+              <th>{{ 'common.department' | translate }}</th>
+              <th>{{ 'common.fees' | translate }}</th>
+              <th>{{ 'common.date' | translate }}</th>
+              <th>{{ 'common.actions' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for(report of transactionList(); track $index){
+              <tr>
+                <td>{{ report.title }}</td>
+                <td>{{ report.creator?.name }}</td>
+                <td>{{ report.department?.name }}</td>
+                <td>{{ report.data?.reportTypeObject?.fees | currency:' SAR ':'symbol':'1.0-0' }}</td>
+                <td>{{ report.createdAt | date:'dd/MM/yyyy' }}</td>
+                <td class="table-btns">
+                  <button *hasPermission="'report:read'" class="btn btn-primary btn-sm" (click)="openViewTransactionModal(report)">{{ 'common.view' | translate }}</button>
+                  <i *hasPermission="'report:delete'" class="fa-solid fa-trash" (click)="deleteTransaction(report.id)"></i>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+        }
+      </div>
+        <app-pagination-button [lastPageReached]="lastPageReached()" [hidden]="transactionList().length === 0" [itemsPerPage]="itemsPerPage()" [currentPage]="currentPage()" (pageChange)="loadTransactions($event)"></app-pagination-button>
+    </div>
+</div>
+<!-- Modal component -->
+<app-new-transaction-modal (save)="saveNewTransaction($event)"></app-new-transaction-modal>
+<app-view-transaction-modal (update)="updateTransaction($event)"></app-view-transaction-modal>
+<app-delete-validation-modal #deleteModal></app-delete-validation-modal>
+<app-toast></app-toast>

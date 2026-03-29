@@ -1,0 +1,286 @@
+@if (isOpen()) {
+  <div class="modal-overlay" (click)="close()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <button class="close-btn" (click)="close()">×</button>
+      <div class="modal-header">
+        <h2>{{ 'modals.view_project' | translate }}</h2>
+      </div>
+
+
+    <div class="modal-body view-mode" *ngIf="project() && !editMode()">
+      <div class="meta-header">
+        <h1 class="main-title">{{ project()!.name }}</h1>
+      </div>
+
+      <div class="form-group">
+        <label>{{ 'common.project_details' | translate }}</label>
+        <div class="main-details">
+          <div class="details-grid">
+            <div class="detail-item">
+              <label>{{ 'common.branch' | translate }}</label>
+              <p>{{ project()!.tenantId }}</p>
+            </div>
+            <div class="detail-item">
+              <label>{{ 'common.budget' | translate }}</label>
+              <p>{{ project()!.totalBudget }}</p>
+            </div>
+            <div class="detail-item">
+              <label>{{ 'common.created_at' | translate }}</label>
+              <p>{{ project()!.createdAt | date: 'yyyy-MM-dd' }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="project()!.terms && project()!.terms!.length > 0">
+        <label>{{ 'common.requirements_details' | translate }}</label>
+        <div class="main-details">
+          <div class="details-grid">
+            <ng-container  *ngFor="let term of project()!.terms; let last = last">
+              <div class="detail-item">
+                <label>{{ 'common.requirement_title' | translate }}</label>
+                <p>{{ term.title }}</p>
+              </div>
+              <div class="detail-item">
+                <label>{{ 'common.requirement_budget' | translate }}</label>
+                <p>{{ term.budget }}</p>
+              </div>
+              <div>
+                <label>{{ 'common.requirement_description' | translate }}</label>
+                <p class="description-box">{{ term.description }}</p>
+              </div>
+              <hr *ngIf="!last" />
+            </ng-container>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="project()!.managers || project()!.workers">
+        <label>{{ 'common.employees_details' | translate }}</label>
+        <div class="main-details">
+          <label>{{ 'common.selected_managers' | translate }}</label>
+          <div class="selected-list">
+            @for (manager of project()!.managers; track $index) {
+              <div class="manager-chip">
+                {{ $index + 1 }}- {{ manager.name }}
+              </div>
+            }
+          </div>
+          <label>{{ 'common.selected_workers' | translate }}</label>
+          <div class="selected-list">
+            @for (worker of project()!.workers; track $index) {
+              <div class="worker-chip">
+                {{ $index + 1 }}- {{ worker.name }}
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="project()!.attachments || project()!.document">
+        <label>{{ 'common.attachments_details' | translate }}</label>
+        <div class="main-details">
+          <div class="form-group" *ngIf="project()!.attachments">
+            <label>{{ 'common.attachments' | translate }}</label>
+            <div class="attachments">
+              <div class="attachment" *ngFor="let file of currentAttachments(); let i = index">
+                <div class="img-attach" *ngIf="file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png') || file.endsWith('.gif')">
+                  <a [href]="'https://api.kayanatdashboard.com/api/' + file.trim()" target="_blank" class="attachment-link">
+                    <img [src]="'https://api.kayanatdashboard.com/api/' + file.trim()" alt="Attachment" class="attachment-img"/>
+                  </a>
+                </div>
+                <div class="file-attach" *ngIf="!(file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png') || file.endsWith('.gif'))">
+                  <a [href]="'https://api.kayanatdashboard.com/api/' + file.trim()" target="_blank" class="attachment-link">{{ file.split('/').pop()?.split('_')!.slice(1).join('_') }}</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group" *ngIf="project()!.document">
+            <label>{{ 'common.documents' | translate }}</label>
+            <div class="attachments">
+              <div class="attachment" *ngFor="let file of currentDocument(); let i = index">
+                <div class="img-attach" *ngIf="file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png') || file.endsWith('.gif')">
+                  <a [href]="'https://api.kayanatdashboard.com/api/' + file.trim()" target="_blank" class="attachment-link">
+                    <img [src]="'https://api.kayanatdashboard.com/api/' + file.trim()" alt="Attachment" class="attachment-img"/>
+                  </a>
+                </div>
+                <div class="file-attach" *ngIf="!(file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png') || file.endsWith('.gif'))">
+                  <a [href]="'https://api.kayanatdashboard.com/api/' + file.trim()" target="_blank" class="attachment-link">{{ file.split('/').pop()?.split('_')!.slice(1).join('_') }}</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" (click)="close()">{{ 'common.close' | translate }}</button>
+        <ng-container *hasPermission="'project:update'">
+          <button class="btn btn-primary" (click)="enableEdit()">{{ 'common.edit' | translate }}</button>
+        </ng-container>
+      </div>
+    </div>
+
+
+      <div class="modal-body" *ngIf="project() && editMode()">
+      <div class="form-group">
+        <label>{{ 'common.project_details' | translate }}</label>
+        <div class="main-details">
+          <div class="form-group">
+            <label>{{ 'common.name' | translate }}</label>
+            <input [(ngModel)]="updatedName"  />
+          </div>
+          <div class="form-group">
+            <label>{{ 'common.branch' | translate }}</label>
+            <select name="branch" [(ngModel)]="updatedBranch" required>
+              @for (d of branchs(); track $index) {
+                <option [ngValue]="d.name">{{ d.name }}</option>
+              }
+            </select>
+          </div>
+          <div class="form-group">
+            <label>{{ 'common.budget' | translate }}</label>
+            <input type="number" [(ngModel)]="updatedTotalBudget"  />
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>{{ 'common.term_details' | translate }}</label>
+        <div class="main-details">
+          <div class="form-group">
+            <label>{{ 'common.terms' | translate }}</label>
+            <div class="term-item" *ngFor="let term of terms(); let i = index; let last = last">
+              <div class="form-row">
+                <div class="form-group half">
+                  <label>{{ 'common.title' | translate }}</label>
+                  <input type="text" [(ngModel)]="term.title" name="termTitle{{i}}" required />
+                </div>
+                <div class="form-group half">
+                  <label>{{ 'common.budget' | translate }}</label>
+                  <input type="number" [(ngModel)]="term.budget" name="termBudget{{i}}" required />
+                </div>
+              </div>
+              <div class="form-group">
+                <label>{{ 'common.description' | translate }}</label>
+                <textarea [(ngModel)]="term.description" name="termDesc{{i}}" rows="2" required></textarea>
+              </div>
+              <button class="btn delete-btn btn-sm" [disabled]="(terms().length <= 1) || (!editMode())" (click)="removeTerm(i)"><i class="fa-solid fa-trash"></i></button>
+              <hr *ngIf="!last" />
+            </div>
+            <button type="button" class="btn btn-success btn-sm" (click)="addTerm()">{{ 'common.add_term' | translate }}</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>{{ 'common.employees_details' | translate }}</label>
+        <div class="main-details">
+          <div class="selected-managers" *ngIf="project()!.managers!.length > 0">
+            <label>{{ 'common.selected_managers' | translate }}</label>
+            <div class="selected-list">
+              @for (manager of project()!.managers; track $index) {
+                <div class="manager-chip">
+                  {{ $index + 1 }}- {{ manager.name }}
+                  <button class="remove-manager" (click)="onManagerToggle($event, manager)">×</button>
+                </div>
+              }
+            </div>
+          </div>
+          <div class="form-group employees-group">
+            <label>{{ 'common.add_managers' | translate }}</label>
+            <div class="employees-list">
+              <label class="employees-option" *ngFor="let e of employees()">
+                <input class="form-check-input" type="checkbox" name="employees" [value]="e.id" (change)="onManagerToggle($event, e)" />
+                {{ e.name }}
+              </label>
+            </div>
+          </div>
+          <div class="selected-workers" *ngIf="project()!.workers!.length > 0">
+            <label>{{ 'common.selected_workers' | translate }}</label>
+            <div class="selected-list">
+              @for (worker of project()!.workers; track $index) {
+                <div class="worker-chip">
+                  {{ $index + 1 }}- {{ worker.name }}
+                  <button class="remove-worker" (click)="onWorkerToggle($event, worker)">×</button>
+                </div>
+              }
+            </div>
+          </div>
+          <div class="form-group employees-group">
+            <label>{{ 'common.add_workers' | translate }}</label>
+            <div class="employees-list">
+              <label class="employees-option" *ngFor="let e of employees()">
+                <input class="form-check-input" type="checkbox" name="employees" [value]="e.id" (change)="onWorkerToggle($event, e)" />
+                {{ e.name }}
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>{{ 'common.attachments_details' | translate }}</label>
+        <div class="main-details">
+          <div class="form-group" *ngIf="project()!.document">
+            <div class="attachments">
+              <div class="attachment" *ngFor="let file of currentDocument(); let i = index">
+                <div class="img-attach" *ngIf="file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png') || file.endsWith('.gif')">
+                  <a [href]="'https://api.kayanatdashboard.com/api/' + file.trim()" target="_blank" class="attachment-link">
+                    <img [src]="'https://api.kayanatdashboard.com/api/' + file.trim()" alt="Attachment" class="attachment-img"/>
+                  </a>
+                  <button type="button" (click)="removeCurrentDocument(i)">×</button>
+                </div>
+                <div class="file-attach" *ngIf="!(file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png') || file.endsWith('.gif'))">
+                  <a [href]="'https://api.kayanatdashboard.com/api/' + file.trim()" target="_blank" class="attachment-link">{{ file.split('/').pop()?.split('_')!.slice(1).join('_') }}</a>
+                  <button type="button" (click)="removeCurrentDocument(i)">×</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>{{ 'common.document' | translate }}</label>
+            <input type="file" (change)="handleDocumentInput($event)" />
+            <ul *ngIf="newDocument.length > 0">
+              <li *ngFor="let file of newDocument; let i = index">
+                {{ file.name }}
+                <button type="button" (click)="removeNewDocument(i)">×</button>
+              </li>
+            </ul>
+          </div>
+          <div class="form-group" *ngIf="project()!.attachments">
+            <div class="attachments">
+              <div class="attachment" *ngFor="let file of currentAttachments(); let i = index">
+                <div class="img-attach" *ngIf="file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png') || file.endsWith('.gif')">
+                  <a [href]="'https://api.kayanatdashboard.com/api/' + file.trim()" target="_blank" class="attachment-link">
+                    <img [src]="'https://api.kayanatdashboard.com/api/' + file.trim()" alt="Attachment" class="attachment-img"/>
+                  </a>
+                  <button type="button" (click)="removeCurrentAttachment(i)">×</button>
+                </div>
+                <div class="file-attach" *ngIf="!(file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png') || file.endsWith('.gif'))">
+                  <a [href]="'https://api.kayanatdashboard.com/api/' + file.trim()" target="_blank" class="attachment-link">{{ file.split('/').pop()?.split('_')!.slice(1).join('_') }}</a>
+                  <button type="button" (click)="removeCurrentAttachment(i)">×</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>{{ 'common.attachments' | translate }}</label>
+            <input type="file" multiple (change)="handleAttachmentInput($event)" />
+            <ul *ngIf="newAttachments.length > 0">
+              <li *ngFor="let file of newAttachments; let i = index">
+                {{ file.name }}
+                <button type="button" (click)="removeNewAttachment(i)">×</button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+        <div class="modal-actions">
+          <button class="btn btn-secondary" (click)="cancelChanges()">{{ 'common.cancel' | translate }}</button>
+          <button class="btn btn-success" (click)="saveChanges()">{{ 'common.save' | translate }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

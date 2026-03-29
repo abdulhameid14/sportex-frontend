@@ -1,0 +1,39 @@
+@if (isOpen()) {
+  <div class="modal-overlay" (click)="close()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ 'modals.add_request' | translate }}</h2>
+        <button class="close-btn" (click)="close()">×</button>
+      </div>
+      <div class="modal-body">
+        <form #requestForm="ngForm" (ngSubmit)="submit(requestForm)">
+
+          <div class="form-group">
+            <label>{{ 'common.request_details' | translate }}</label>
+            <div class="main-details">
+              <div class="details-grid">
+                <div class="form-group">
+                  <label>{{ 'common.comment' | translate }}</label>
+                  <input type="text" name="comment" ngModel required />
+                </div>
+                <div class="form-group">
+                  <label>{{ 'common.action' | translate }}</label>
+                  <select name="action" ngModel required>
+                    <option value="APPROVE">{{ 'common.approve' | translate }}</option>
+                    <option value="REJECT">{{ 'common.reject' | translate }}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button type="submit" class="btn btn-primary">{{ 'common.save' | translate}}</button>
+            <button type="button" class="btn btn-secondary" (click)="close()">{{ 'common.cancel' | translate}}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+}
+<app-toast></app-toast>

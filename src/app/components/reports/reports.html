@@ -1,0 +1,53 @@
+<div id="page-reports" class="page">
+  <div class="page-header">
+    <h1 class="page-title">{{ 'reports.reports' | translate }}</h1>
+    <div class="page-actions">
+      <button *hasPermission="'report:create'" class="btn btn-header" (click)="openNewReportModal()">{{ 'reports.new_report' | translate }}</button>
+    </div>
+  </div>
+  <div *hasAnyPermission="['report:read', 'report:all']" class="table-container">
+    <div class="table-header">
+      <div class="table-title">{{ 'reports.reports' | translate }}</div>
+    </div>
+    <div class="table-body">
+      @if (isLoading()) {
+        <div>
+          <app-skeleton-table [rows]="4" [cols]="5"></app-skeleton-table>
+        </div>
+      }
+      @else {
+      <table>
+        <thead>
+          <tr>
+            <th>{{ 'common.title' | translate }}</th>
+            <th>{{ 'common.creator' | translate }}</th>
+            <th>{{ 'common.department' | translate }}</th>
+            <th>{{ 'common.date' | translate }}</th>
+            <th>{{ 'common.actions' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for(report of reportList(); track $index){
+            <tr>
+              <td>{{ report.title }}</td>
+              <td>{{ report.creator?.name }}</td>
+              <td>{{ report.department?.name }}</td>
+              <td>{{ report.createdAt | date:'dd/MM/yyyy' }}</td>
+              <td class="table-btns">
+                <button class="btn btn-primary btn-sm" (click)="openViewReportModal(report)">{{ 'common.view' | translate }}</button>
+                <i *hasPermission="'report:delete'" class="fa-solid fa-trash" (click)="deleteReport(report.id)"></i>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      }
+    </div>
+      <app-pagination-button [lastPageReached]="lastPageReached()" [hidden]="reportList().length === 0" [itemsPerPage]="itemsPerPage()" [currentPage]="currentPage()" (pageChange)="loadReports($event)"></app-pagination-button>
+  </div>
+</div>
+<!-- Modal component -->
+<app-new-report-modal (save)="saveNewReport($event)"></app-new-report-modal>
+<app-view-report-modal (update)="updateReport($event)"></app-view-report-modal>
+<app-delete-validation-modal #deleteModal></app-delete-validation-modal>
+<app-toast></app-toast>

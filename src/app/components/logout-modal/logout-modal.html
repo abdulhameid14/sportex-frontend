@@ -1,0 +1,11 @@
+@if (isOpen()) {
+  <div class="logout-modal" (click)="close()">
+    <div class="logout-content" (click)="$event.stopPropagation()">
+      <p>{{ 'modals.confirm_logout' | translate }}</p>
+      <div class="logout-actions">
+        <button class="confirm-btn" (click)="onLogout()">{{ 'common.logout' | translate }}</button>
+        <button class="cancel-btn" (click)="close()">{{ 'common.cancel' | translate }}</button>
+      </div>
+    </div>
+  </div>
+}

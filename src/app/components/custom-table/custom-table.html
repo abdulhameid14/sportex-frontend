@@ -1,0 +1,196 @@
+<div class="custom-table-container">
+  <!-- Header -->
+  <div class="header">
+    <h2>{{ tableMeta.title }}</h2>
+    <button class="btn btn-primary" (click)="addRow()">+ {{ 'common.add' | translate }}</button>
+  </div>
+
+  <!-- Loading state -->
+  <div *ngIf="loading" class="loading">
+    {{ 'common.loading' | translate }}...
+  </div>
+
+  <!-- Tabs -->
+  <div *ngIf="!loading" class="tabs">
+    <button [class.active]="activeTab==='all'" (click)="setTab('all')" class="tab-btn">
+      {{ 'common.all' | translate }}
+    </button>
+    <button *ngIf="tableMeta.requireApproval" [class.active]="activeTab==='pending'" (click)="setTab('pending')" class="tab-btn">
+      {{ 'common.pending' | translate }} ({{ pendingRows.length }})
+    </button>
+  </div>
+
+  <!-- All Records Table -->
+  <table *ngIf="!loading && activeTab==='all'" class="records-table">
+    <thead>
+      <tr>
+        <th *ngFor="let key of modelKeys">{{ key }}</th>
+        <th *ngIf="tableMeta.onlyShowToUsers">{{ 'common.employees' | translate }}</th>
+        <th *ngIf="tableMeta.requireApproval">{{ 'common.participants' | translate }}</th>
+        <th>{{ 'common.actions' | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of rows; trackBy: trackById" [attr.data-id]="row.id">
+        <td *ngFor="let key of modelKeys">
+          <ng-container *ngIf="!isFileField(key); else fileTpl">
+            {{ row.data?.[key] }}
+          </ng-container>
+          <ng-template #fileTpl>
+            <a *ngIf="row.data?.[key]" [href]="row.data[key]" target="_blank" class="file-link">
+              📎 {{ 'common.file' | translate }}
+            </a>
+          </ng-template>
+        </td>
+        <td *ngIf="tableMeta.onlyShowToUsers">
+          {{ getEmployeeNames(row.employees) }}
+        </td>
+        <td *ngIf="tableMeta.requireApproval">
+          <span *ngFor="let p of row.participants; let last = last">
+            {{ getEmployeeName(p.id) }}<span *ngIf="!last">, </span>
+          </span>
+        </td>
+        <td class="actions">
+          <button
+            *ngIf="canDelete(row)"
+            class="btn btn-sm btn-danger"
+            (click)="deleteRow(row)">
+            {{ 'common.delete' | translate }}
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="rows.length === 0">
+        <td [attr.colspan]="modelKeys.length + (tableMeta.onlyShowToUsers ? 1 : 0) + (tableMeta.requireApproval ? 1 : 0) + 1" class="text-center">
+          {{ 'common.noRecords' | translate }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Pending Votes Table -->
+  <table *ngIf="!loading && activeTab==='pending' && tableMeta.requireApproval" class="records-table">
+    <thead>
+      <tr>
+        <th *ngFor="let key of modelKeys">{{ key }}</th>
+        <th>{{ 'common.vote' | translate }}</th>
+        <th>{{ 'common.comment' | translate }}</th>
+        <th>{{ 'common.actions' | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of pendingRows; let i = index; trackBy: trackById">
+        <td *ngFor="let key of modelKeys">{{ row.data?.[key] }}</td>
+        <td>
+          <select [(ngModel)]="row._vote" class="form-control">
+            <option value="">{{ 'common.select' | translate }}</option>
+            <option value="approve">{{ 'common.approve' | translate }}</option>
+            <option value="reject">{{ 'common.reject' | translate }}</option>
+          </select>
+        </td>
+        <td>
+          <input [(ngModel)]="row._comment" class="form-control" type="text" />
+        </td>
+        <td>
+          <button
+            class="btn btn-sm btn-success"
+            [disabled]="!row._vote"
+            (click)="submitVote(row, row._vote, row._comment)">
+            {{ 'common.submit' | translate }}
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="pendingRows.length === 0">
+        <td [attr.colspan]="modelKeys.length + 3" class="text-center">
+          {{ 'common.noRecords' | translate }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Add Row Modal -->
+  <div *ngIf="showAddRow" class="modal-overlay" (click)="cancelAddRow()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ 'common.addRecord' | translate }}</h3>
+        <button class="btn-close" (click)="cancelAddRow()">✕</button>
+      </div>
+
+      <form class="modal-body" (ngSubmit)="saveRow()">
+        <!-- Dynamic fields from model -->
+        <div *ngFor="let key of modelKeys" class="form-group">
+          <label>{{ key }}</label>
+
+          <ng-container *ngIf="!isFileField(key); else fileUploadTpl">
+            <input
+              [(ngModel)]="newRow[key]"
+              [name]="key"
+              type="text"
+              class="form-control"
+              placeholder="Enter {{ key }}" />
+          </ng-container>
+
+          <ng-template #fileUploadTpl>
+            <div class="file-upload-group">
+              <div class="file-input-wrapper">
+                <input
+                  #fileInput
+                  type="file"
+                  (change)="onFileSelect($event, key)"
+                  [disabled]="fileUploadProgress[key]"
+                  class="file-input-hidden"
+                  accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" />
+                <button
+                  type="button"
+                  class="btn btn-outline"
+                  (click)="fileInput.click()"
+                  [disabled]="fileUploadProgress[key]">
+                  📁 {{ 'common.selectFile' | translate }}
+                </button>
+              </div>
+              <div *ngIf="fileUploadProgress[key]" class="upload-progress">
+                ⏳ {{ 'common.uploading' | translate }}...
+              </div>
+              <div *ngIf="uploadedFileUrls[key]" class="upload-success">
+                ✓ {{ 'common.fileUploaded' | translate }}
+                <a [href]="uploadedFileUrls[key]" target="_blank" class="file-link">
+                  {{ 'common.view' | translate }}
+                </a>
+              </div>
+            </div>
+          </ng-template>
+        </div>
+
+        <!-- Employees dropdown (if onlyShowToUsers) -->
+        <div *ngIf="tableMeta.onlyShowToUsers && allEmployees.length > 0" class="form-group">
+          <label>{{ 'common.employees' | translate }}</label>
+          <select multiple [(ngModel)]="newRow.employees" name="employees" class="form-control">
+            <option *ngFor="let emp of allEmployees" [ngValue]="emp">
+              {{ emp.name }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Participants dropdown (if requireApproval) -->
+        <div *ngIf="tableMeta.requireApproval && allParticipants.length > 0" class="form-group">
+          <label>{{ 'common.participants' | translate }}</label>
+          <select multiple [(ngModel)]="newRow.participants" name="participants" class="form-control">
+            <option *ngFor="let p of allParticipants" [ngValue]="p">
+              {{ p.name }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Buttons -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="cancelAddRow()">
+            {{ 'common.cancel' | translate }}
+          </button>
+          <button type="submit" class="btn btn-primary" [disabled]="submitting">
+            {{ submitting ? ('common.saving' | translate) : ('common.save' | translate) }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+

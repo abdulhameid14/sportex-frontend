@@ -1,0 +1,139 @@
+@if (isOpen()) {
+  <div class="modal-overlay" (click)="close()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <button class="close-btn" (click)="close()">×</button>
+      <div class="modal-header">
+        <h2>{{ 'modals.add_project' | translate }}</h2>
+      </div>
+      <div class="modal-body">
+        <form #projectForm="ngForm" (ngSubmit)="submit(projectForm)">
+
+
+
+          <div class="form-group">
+            <label>{{ 'common.project_details' | translate }}</label>
+            <div class="main-details">
+              <div class="details-grid">
+                <div class="form-group">
+                  <label>{{ 'common.name' | translate }}</label>
+                  <input type="text" name="name" ngModel required />
+                </div>
+                <div class="form-group">
+                  <label>{{ 'common.budget' | translate }}</label>
+                  <input type="number" name="budget" ngModel required />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>{{ 'common.employees_details' | translate }}</label>
+            <div class="main-details">
+              <div class="form-group employees-group">
+                <label>{{ 'common.managers' | translate }}</label>
+                <div class="employees-list">
+                  <label class="employees-option" *ngFor="let m of employees()">
+                    <input class="form-check-input" type="radio" name="employees" [value]="m.id" (change)="onManagerToggle($event, m)" />
+                    {{ m.name }}
+                  </label>
+                </div>
+              </div>
+              <div class="selected-managers" *ngIf="selectedManagers.length > 0">
+                <label>{{ 'common.selected_managers' | translate }}</label>
+                <div class="selected-list">
+                  @for (manager of selectedManagers; track $index) {
+                    <span class="manager-chip">
+                      {{ $index + 1 }}- {{ manager.name }}
+                      <button class="remove-manager" (click)="onManagerToggle($event, manager)">×</button>
+                    </span>
+                  }
+                </div>
+              </div>
+              <div class="form-group employees-group">
+                <label>{{ 'common.workers' | translate }}</label>
+                <div class="employees-list">
+                  <label class="employees-option" *ngFor="let w of employees()">
+                    <input class="form-check-input" type="radio" name="employees" [value]="w.id" (change)="onWorkerToggle($event, w)" />
+                    {{ w.name }}
+                  </label>
+                </div>
+              </div>
+              <div class="selected-workers" *ngIf="selectedWorkers.length > 0">
+                <label>{{ 'common.selected_workers' | translate }}</label>
+                <div class="selected-list">
+                  @for (worker of selectedWorkers; track $index) {
+                    <span class="worker-chip">
+                      {{ $index + 1 }}- {{ worker.name }}
+                      <button class="remove-worker" (click)="onWorkerToggle($event, worker)">×</button>
+                    </span>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>{{ 'common.term_details' | translate }}</label>
+            <div class="main-details">
+              <div class="form-group">
+                <label>{{ 'common.terms' | translate }}</label>
+                <div class="form-list">
+                  <div class="term-item" *ngFor="let term of terms; let i = index; let last = last">
+                    <div class="form-row">
+                      <div class="form-group half">
+                        <label>{{ 'common.title' | translate }}</label>
+                        <input type="text" [(ngModel)]="term.title" name="termTitle{{i}}" required />
+                      </div>
+                      <div class="form-group half">
+                        <label>{{ 'common.budget' | translate }}</label>
+                        <input type="number" [(ngModel)]="term.budget" name="termBudget{{i}}" required />
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label>{{ 'common.description' | translate }}</label>
+                      <textarea [(ngModel)]="term.description" name="termDesc{{i}}" rows="2" required></textarea>
+                    </div>
+                    <button class="btn delete-btn btn-sm" [disabled]="terms.length <= 1" (click)="removeTerm(i)"><i class="fa-solid fa-trash"></i></button>
+                    <hr  *ngIf="!last" />
+                  </div>
+                </div>
+                <button type="button" class="btn btn-success btn-sm" (click)="addTerm()">{{ 'common.add_term' | translate }}</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>{{ 'common.attachments_details' | translate }}</label>
+            <div class="main-details">
+              <div class="form-group">
+                <label>{{ 'common.document' | translate }}</label>
+                <input type="file" (change)="handleDocumentInput($event)" />
+                <ul *ngIf="document.length > 0">
+                  <li *ngFor="let file of document; let i = index">
+                    {{ file.name }}
+                    <button type="button" (click)="removeDoc(i)">×</button>
+                  </li>
+                </ul>
+              </div>
+              <div class="form-group">
+                <label>{{ 'common.attachments' | translate }}</label>
+                <input type="file" multiple (change)="handleAttachmentInput($event)" />
+                <ul *ngIf="attachments.length > 0">
+                  <li *ngFor="let file of attachments; let i = index">
+                    {{ file.name }}
+                    <button type="button" (click)="removeAttachment(i)">×</button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button type="submit" class="btn btn-primary" [disabled]="projectForm.invalid">{{ 'common.save' | translate }}</button>
+            <button type="button" class="btn btn-secondary" (click)="close()">{{ 'common.cancel' | translate }}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+}

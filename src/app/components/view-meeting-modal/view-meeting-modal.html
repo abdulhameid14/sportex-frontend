@@ -1,0 +1,68 @@
+@if (isOpen()) {
+<div class="modal-overlay" (click)="close()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="close()">×</button>
+
+    <div class="modal-header">
+      <h2>{{ 'modals.view_meeting' | translate }}</h2>
+    </div>
+
+    <div class="modal-body view-mode">
+      <div class="meta-header">
+        <h1 class="main-title">{{ meeting()?.title }}</h1>
+        <div class="view-badges">
+          <span class="badge status">{{ getMeetingStatus() | uppercase }}</span>
+        </div>
+      </div>
+
+      <div class="main-details">
+        <div class="details-grid">
+          <div class="detail-item">
+            <label>{{ 'meetings.date' | translate }}</label>
+            <p>{{ meeting()?.deadline | date : 'mediumDate' }}</p>
+          </div>
+          <div class="detail-item">
+            <label>{{ 'meetings.comments' | translate }}</label>
+            <p>{{ getCommentsCount() }}</p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>{{ 'meetings.participants' | translate }}</label>
+          <table class="custom-table small no-hover">
+            <thead>
+              <tr>
+                <th>{{ 'common.user' | translate }}</th>
+                <th>{{ 'meetings.vote' | translate }}</th>
+                <th>{{ 'meetings.comment' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let p of meeting()?.participants">
+                <td>{{ p.userId }}</td>
+                <td>{{ p.vote }}</td>
+                <td>{{ p.comment }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="form-group" *ngIf="attachments.length > 0">
+          <label>{{ 'common.attachments' | translate }}</label>
+          <div class="attachments">
+            <div class="attachment" *ngFor="let file of attachments; let i = index">
+              <div class="file-attach">
+                <a [href]="file" target="_blank" class="attachment-link">{{ file.split('/').pop() }}</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn btn-secondary" (click)="close()">{{ 'common.close' | translate }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+}

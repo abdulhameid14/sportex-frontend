@@ -1,0 +1,107 @@
+@if (isOpen()) {
+  <div class="modal-overlay" (click)="close()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <button class="close-btn" (click)="close()">×</button>
+      <div class="modal-header">
+        <h2>{{ 'modals.add_performance' | translate }}</h2>
+      </div>
+      <div class="modal-body">
+        <form #performanceForm="ngForm" (ngSubmit)="submit(performanceForm)">
+          <div class="form-group">
+            <label>{{ 'common.reviewPeriod' | translate }}</label>
+            <select name="reviewPeriod" ngModel required>
+              <option [ngValue]="1"><span class="year-span">{{ currentYear }}</span> | {{ 'common.first_quarter' | translate }}</option>
+              <option [ngValue]="2"><span class="year-span">{{ currentYear }}</span> | {{ 'common.second_quarter' | translate }}</option>
+              <option [ngValue]="3"><span class="year-span">{{ currentYear }}</span> | {{ 'common.third_quarter' | translate }}</option>
+              <option [ngValue]="4"><span class="year-span">{{ currentYear }}</span> | {{ 'common.fourth_quarter' | translate }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">{{ 'common.rating' | translate }}</label>
+            <div class="rating-options">
+              <label class="rating-option">
+                <input class="form-check-input" type="radio" name="rating" ngModel value="5" required />
+                {{ 'common.excellent' | translate }}
+              </label>
+              <label class="rating-option">
+                <input class="form-check-input" type="radio" name="rating" ngModel value="4" />
+                {{ 'common.verygood' | translate }}
+              </label>
+              <label class="rating-option">
+                <input class="form-check-input" type="radio" name="rating" ngModel value="3" />
+                {{ 'common.good' | translate }}
+              </label>
+              <label class="rating-option">
+                <input class="form-check-input" type="radio" name="rating" ngModel value="2" />
+                {{ 'common.average' | translate }}
+              </label>
+              <label class="rating-option">
+                <input class="form-check-input" type="radio" name="rating" ngModel value="1" />
+                {{ 'common.needs_improvement' | translate }}
+              </label>
+            </div>
+          </div>
+          <hr />
+          <div class="form-group">
+            <label>{{ 'common.goals' | translate }}</label>
+            <div class="form-list">
+              <div class="goal-item" *ngFor="let goal of goals; let i = index; let last = last">
+                <div class="form-row">
+                  <div class="form-group half">
+                    <label>{{ 'common.title' | translate }}</label>
+                    <input type="text" [(ngModel)]="goal.title" name="goalTitle{{i}}" required />
+                  </div>
+                  <div class="form-group half">
+                    <label>{{ 'common.description' | translate }}</label>
+                    <input type="text" [(ngModel)]="goal.description" name="goalDescription{{i}}" required />
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group half">
+                    <label>{{ 'common.status' | translate }}</label>
+                    <input type="text" [(ngModel)]="goal.status" name="goalStatus{{i}}" required />
+                  </div>
+                  <div class="form-group half">
+                    <label>{{ 'common.comments' | translate }}</label>
+                    <input [(ngModel)]="goal.comments" name="goalComments{{i}}" required />
+                  </div>
+                </div>
+                <button class="btn delete-btn btn-sm" [disabled]="goals.length <= 1" (click)="removeGoal(i)"><i class="fa-solid fa-trash"></i></button>
+                <hr *ngIf="!last" />
+              </div>
+            </div>
+            <button type="button" class="btn btn-success btn-sm" (click)="addGoal()">{{ 'common.add_goal' | translate }}</button>
+          </div>
+          <hr />
+          <div class="form-group">
+            <label>{{ 'common.feedback' | translate }}</label>
+            <div class="goals-list">
+              <div class="goal-item" *ngFor="let feedback of feedbacks; let i = index; let last = last">
+                <div class="form-group">
+                  <label>{{ 'common.comments' | translate }}</label>
+                  <input [(ngModel)]="feedback.comments" name="feedbackComments{{i}}" required />
+                </div>
+                <button class="btn delete-btn btn-sm" [disabled]="feedbacks.length <= 1" (click)="removeFeedback(i)"><i class="fa-solid fa-trash"></i></button>
+                <hr *ngIf="!last"/>
+              </div>
+            </div>
+            <button type="button" class="btn btn-success btn-sm" (click)="addFeedback()">{{ 'common.add_comments' | translate }}</button>
+          </div>
+          <div class="modal-actions">
+            <button type="submit" class="btn btn-primary" [disabled]="performanceForm.invalid">
+              @if (isLoading()) {
+                <span class="loader"></span>
+              }
+              @else {
+                {{ 'common.save' | translate }}
+              }
+            </button>
+            <button type="button" class="btn btn-secondary" (click)="close()">{{ 'common.cancel' | translate }}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+}
+
+<app-toast></app-toast>

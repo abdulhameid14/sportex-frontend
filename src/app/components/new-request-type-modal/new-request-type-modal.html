@@ -1,0 +1,104 @@
+@if (isOpen()) {
+<div class="modal-overlay" (click)="close()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ 'modals.add_request_type' | translate }}</h2>
+      <button class="close-btn" (click)="close()">×</button>
+    </div>
+
+    <div class="modal-body">
+      <form #requestTypeForm="ngForm" (ngSubmit)="submit(requestTypeForm)">
+        <div class="form-group">
+          <label>{{ 'common.request_type_details' | translate }}</label>
+          <div class="main-details">
+            <div class="form-group">
+              <label>{{ 'common.name' | translate }}</label>
+              <input type="text" name="name" ngModel required />
+            </div>
+            <div class="form-group signers-group">
+              <label>{{ 'common.signers' | translate }}</label>
+              <div class="signers-list">
+                <label class="signers-option" *ngFor="let s of signers()">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    [value]="s"
+                    (change)="toggleSigner(s, $event.target.checked)"
+                  />
+                  {{ s.name }}
+                </label>
+              </div>
+              <div class="selected-signers" *ngIf="selectedSigners.length > 0">
+                <label>{{ 'common.selected_signers' | translate }}</label>
+                <div class="selected-list">
+                  @for (signer of selectedSigners; track $index) {
+                  <span class="signer-chip">
+                    {{ $index + 1 }}- {{ signer.name }}
+                    <button class="remove-signer" (click)="toggleSigner(signer, false)">×</button>
+                  </span>
+                  }
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>{{ 'common.description' | translate }}</label>
+              <textarea name="description" ngModel required></textarea>
+            </div>
+            <!-- Include Fee Checkbox -->
+            <div class="form-group include-fee">
+              <label>
+                <input type="checkbox" name="fee" [(ngModel)]="fee" />
+                {{ 'common.include_fee' | translate }}
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>{{ 'common.docs_to_sign' | translate }}</label>
+          <input type="file" multiple (change)="handleDocsInput($event)" />
+          <ul *ngIf="documentToSign.length > 0">
+            <li *ngFor="let file of documentToSign; let i = index">
+              {{ file.name }}
+              <button type="button" (click)="removeDocumentToSign(i)">×</button>
+            </li>
+          </ul>
+        </div>
+        <div class="form-group">
+          <label>{{ 'common.branch' | translate }}</label>
+          <select
+            name="branch"
+            disabled="{{ all() }}"
+            ngModel
+            required
+            (ngModelChange)="onBranchChange($event)"
+          >
+            <option *ngFor="let branch of branches" [value]="branch.name">
+              {{ branch.name }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group include-fee">
+          <label>
+            <input type="checkbox" name="all" [(ngModel)]="all" />
+            {{ 'common.allbranchs' | translate }}
+          </label>
+        </div>
+
+        <div class="modal-actions">
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="requestTypeForm.invalid || !selectedSigners.length"
+          >
+            {{ 'common.save' | translate }}
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="close()">
+            {{ 'common.cancel' | translate }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+}

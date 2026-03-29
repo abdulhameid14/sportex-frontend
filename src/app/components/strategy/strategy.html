@@ -1,0 +1,52 @@
+<div id="page-strategy" class="page">
+  <div class="page-header">
+    <h1 class="page-title">{{ 'strategy.strategies' | translate }}</h1>
+    <div class="page-actions">
+      <button *hasPermission="'strategy:create'" class="btn btn-header" (click)="openNewStrategyModal()">{{ 'strategy.new_strategy' | translate }}</button>
+    </div>
+  </div>
+  <div *hasAnyPermission="['strategy:read', 'strategy:all']" class="card">
+    <div class="card-header">{{ 'strategy.active_strategies' | translate }}</div>
+    <div class="card-body">
+      <div class="strategy-list">
+        @for (strategy of strategyList(); track $index) {
+          <div class="strategy-item">
+            <div class="strategy-header">
+              <h3 class="strategy-title">{{ strategy.title}}</h3>
+              @if (strategy.active) {
+                <span class="status-badge status-approved">{{ 'status.active' | translate }}</span>
+              }
+              @else {
+                <span class="status-badge status-rejected">{{ 'status.inactive' | translate }}</span>
+              }
+            </div>
+            <p class="strategy-description">{{ strategy.description }}</p>
+            <div class="strategy-goals">
+              <div class="strategy-goals-title">{{ 'strategy.strategy_goals' | translate }}</div>
+              <div class="strategy-goals-list">
+                @if (strategy.goals) {
+                  @for (goal of strategy.goals; track $index) {
+                    <span class="goal-chip"><span style="color: green;">•</span>{{ goal.name }}</span>
+                  }
+                }
+              </div>
+            </div>
+            <div class="strategy-meta">
+              <span>{{ 'strategy.created_at' | translate }}: {{ strategy.createdAt | date:'dd/MM/yyyy' }}</span>
+              <div class="strategy-actions">
+                <button class="btn btn-primary" (click)="openViewStrategyModal(strategy)">{{ 'common.view' | translate }}</button>
+                <i *hasPermission="'strategy:delete'" class="fa-solid fa-trash" (click)="deleteStrategy(strategy.id)"></i>
+              </div>
+            </div>
+          </div>
+        }
+          <app-pagination-button [lastPageReached]="lastPageReached()" [hidden]="strategyList().length === 0" [itemsPerPage]="itemsPerPage()" [currentPage]="currentPage()" (pageChange)="loadStrategies($event)"></app-pagination-button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal component -->
+<app-new-strategy-modal (save)="saveNewStrategy($event)"></app-new-strategy-modal>
+<app-view-strategy-modal (update)="updateStrategy($event)"></app-view-strategy-modal>
+<app-delete-validation-modal #deleteModal></app-delete-validation-modal>
+<app-toast></app-toast>

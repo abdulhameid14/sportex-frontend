@@ -1,0 +1,220 @@
+<div id="page-settings" class="page">
+  <div class="page-header">
+    <h1 class="page-title">{{ 'settings.settings' | translate }}</h1>
+  </div>
+  <div class="nav-tabs">
+    <button
+      class="nav-tab"
+      [class.active]="isActiveTab() === 'user_profile'"
+      (click)="setActiveTab('user_profile')"
+    >
+      {{ 'settings.user_profile' | translate }}
+    </button>
+    <button
+      *hasPermission="'user:create'"
+      class="nav-tab"
+      [class.active]="isActiveTab() === 'add_account'"
+      (click)="setActiveTab('add_account')"
+    >
+      {{ 'settings.add_account' | translate }}
+    </button>
+    <button
+      *hasAnyPermission="['role:read', 'role:all']"
+      class="nav-tab"
+      [class.active]="isActiveTab() === 'roles_permissions'"
+      (click)="setActiveTab('roles_permissions')"
+    >
+      {{ 'settings.roles_permissions' | translate }}
+    </button>
+  </div>
+  @if (isActiveTab() === 'user_profile') {
+  <div class="settings-grid" *ngIf="user()">
+    <div class="card" *hasAnyPermission="['user:update', 'employee:update']">
+      <div class="card-header">{{ 'settings.personal_information' | translate }}</div>
+      <div class="card-body">
+        <form #personalForm="ngForm" (ngSubmit)="submitPersonalInfo(personalForm)">
+          <div class="form-group avatar-group" *hasPermission="'employee:update'">
+            <label>{{ 'common.photo' | translate }}</label>
+            <div class="avatar-upload" (click)="fileInput.click()">
+              <img [src]="selectedImage() || 'logo/avatar.png'" alt="avatar" />
+              <div class="overlay">
+                <i class="fa-solid fa-camera"></i>
+              </div>
+              <input #fileInput type="file" accept="image/*" name="photo" class="form-control" (change)="onPhotoSelected($event)" hidden/>
+            </div>
+          </div>
+          <div *hasPermission="'user:update'" class="form-group">
+            <label>{{ 'settings.email' | translate }}</label>
+            <div class="input-icon">
+              <i class="fa-solid fa-envelope"></i>
+              <input type="email" name="email" [ngModel]="user()!.email" class="form-control" placeholder="{{ 'settings.email_placeholder' | translate }}" />
+            </div>
+          </div>
+          <div *hasPermission="'user:update'" class="form-group">
+            <label>{{ 'settings.password' | translate }}</label>
+            <div class="input-icon">
+              <input [type]="passwordVisible ? 'text' : 'password'" name="password" class="form-control" ngModel placeholder="{{ 'login.password' | translate }}"/>
+              <i (click)="togglePasswordVisibility()" class="toggle-password" [class]="passwordVisible ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div *hasPermission="'employee:update'" class="form-group half">
+              <label>{{ 'settings.full_name' | translate }}</label>
+              <div class="input-icon">
+                <i class="fa-solid fa-user"></i>
+                <input type="text" name="username" [ngModel]="user()!.employee!.name" class="form-control" placeholder="{{ 'settings.full_name_placeholder' | translate }}" />
+              </div>
+            </div>
+            <div *hasPermission="'user:update'" class="form-group half">
+              <label>{{ 'common.national_id' | translate }}</label>
+              <div class="input-icon">
+                <i class="fa-solid fa-id-card"></i>
+                <input type="text" name="nationalId" [ngModel]="user()!.nationalId" class="form-control" placeholder="{{ 'common.national_id_placeholder' | translate }}" />
+              </div>
+            </div>
+          </div>
+
+          <div *hasPermission="'employee:update'" class="form-row">
+            <div class="form-group half">
+              <label>{{ 'settings.position' | translate }}</label>
+              <div class="input-icon">
+                <i class="fa-solid fa-briefcase"></i>
+                <input type="text" name="position" [ngModel]="user()!.employee!.position" class="form-control" placeholder="{{ 'settings.position_placeholder' | translate }}" />
+              </div>
+            </div>
+            <div class="form-group half">
+              <label>{{ 'common.phone' | translate }}</label>
+              <div class="input-icon">
+                <i class="fa-solid fa-phone"></i>
+                <input type="text" name="phone" [ngModel]="user()!.employee!.phone" class="form-control" placeholder="{{ 'common.phone' | translate }}" />
+              </div>
+            </div>
+          </div>
+
+          <div *hasPermission="'employee:update'" class="form-row">
+            <div class="form-group half">
+              <label>{{ 'settings.salary' | translate }}</label>
+              <div class="input-icon">
+                <i class="fa-solid fa-dollar-sign"></i>
+                <input type="number" name="salary" [ngModel]="user()!.employee!.salary" class="form-control" placeholder="{{ 'settings.salary_placeholder' | translate }}" />
+              </div>
+            </div>
+            <div class="form-group half">
+              <label>{{ 'settings.leave_days' | translate }}</label>
+              <div class="input-icon">
+                <i class="fa-solid fa-suitcase"></i>
+                <input type="number" name="vacations" [ngModel]="user()!.employee!.vacations" class="form-control" placeholder="{{ 'settings.leave_days_placeholder' | translate }}" />
+              </div>
+            </div>
+          </div>
+
+          <div *hasPermission="'user:update'" class="form-row">
+            <div class="form-group half">
+              <label>{{ 'common.role' | translate }}</label>
+              <select class="form-control" name="role" [ngModel]="user()!.role">
+                <option disabled [ngValue]="user()!.role">{{ user()!.role?.name }}</option>
+                @for (role of roleList(); track $index) {
+                  <option class="form-control" name="role" [ngValue]="role">{{ role.name }}</option>
+                }
+              </select>
+            </div>
+            <div class="form-group half">
+              <label>{{ 'settings.department' | translate }}</label>
+              <select class="form-control" name="department" [ngModel]="user()!.employee!.department">
+                <option disabled [ngValue]="user()!.employee?.department">{{ user()!.employee?.department?.name }}</option>
+                @for (dep of departmentList(); track $index) {
+                  <option class="form-control" name="department" [ngValue]="dep">{{ dep.name }}</option>
+                }
+              </select>
+            </div>
+          </div>
+          <div *hasPermission="'user:update'" class="form-group">
+            <label>{{ 'common.branch' | translate }}</label>
+            <select class="form-control" name="branch" [ngModel]="user()!.employee!.tenantId">
+              <option disabled [ngValue]="user()!.employee?.tenantId">{{ user()!.employee?.tenantId }}</option>
+              @for (branch of branchList(); track $index) {
+                <option class="form-control" name="branch" [ngValue]="branch.name">{{ branch.name }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="save-btn">
+            <button type="submit" class="btn btn-primary" [disabled]="personalForm.invalid">
+              @if (isLoading()) {
+              <span class="loader"></span>
+              } @else {
+              {{ 'common.save' | translate }}
+              }
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">{{ 'settings.settings' | translate }}</div>
+      <div class="card-body">
+        <div class="form-group">
+          <label class="form-label">{{ 'settings.language' | translate }}</label>
+          <select class="form-control" (change)="translation.useLanguage($event)">
+            <option value="ar" [selected]="translation.translate.currentLang === 'ar'">
+              {{ 'settings.arabic' | translate }}
+            </option>
+            <option value="en" [selected]="translation.translate.currentLang === 'en'">
+              {{ 'settings.english' | translate }}
+            </option>
+          </select>
+        </div>
+        <!-- Signature Modal -->
+        @if (isSignatureOpen) {
+          <div *hasPermission="'user:update'" class="signature-inline" (click)="closeOnOverlay($event)">
+            <div class="modal-content" (click)="$event.stopPropagation()">
+              <button class="sign-close-btn" (click)="closePad()">×</button>
+              <div class="sign-modal-header">
+                <h3>{{ 'common.sign_below' | translate }}</h3>
+              </div>
+              <div>
+                <canvas #signatureCanvas></canvas>
+              </div>
+              <div class="actions">
+                <button class="btn btn-danger" (click)="clear()">
+                  {{ 'common.clear' | translate }}
+                </button>
+                <button class="btn btn-success" (click)="save()">
+                  {{ 'common.save' | translate }}
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+        <!-- Display saved signature -->
+        @if (savedSignature()) {
+          <div *hasPermission="'user:update'" class="saved-signature">
+            <label>{{ 'common.your_signature' | translate }}</label>
+            <img [src]="'data:image/png;base64,' + savedSignature()" alt="User Signature" class="signature-preview" />
+          </div>
+        }
+        <div *hasPermission="'user:update'" class="signature-actions">
+          <button type="button" class="btn btn-header" (click)="openSignaturePad()">
+            {{ 'common.add_signature' | translate }}
+          </button>
+          <button type="button" class="btn btn-danger" *ngIf="savedSignature()" (click)="delete()">
+            {{ 'common.delete_signature' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  } @else if (isActiveTab() === 'add_account') {
+  <settings-new-account></settings-new-account>
+
+  } @else if (isActiveTab() === 'roles_permissions') {
+  <app-roles></app-roles>
+  }
+</div>
+
+
+<app-change-password-modal #passwordModal></app-change-password-modal>
+<app-toast></app-toast>

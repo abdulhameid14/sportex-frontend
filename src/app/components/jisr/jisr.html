@@ -1,0 +1,60 @@
+<div id="page-strategy" class="page">
+  <div class="page-header">
+    <h1 class="page-title">{{ 'common.jisr' | translate }}</h1>
+    <div class="page-actions">
+    </div>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab" [class.active]="currentTab() === 'my_attendance'" (click)="changeTab('my_attendance')">{{ 'common.my_attendance' | translate }}</button>
+    <button class="nav-tab" [class.active]="currentTab() === 'attendance_summary'" (click)="changeTab('attendance_summary')">{{ 'common.attendance_summary' | translate }}</button>
+  </div>
+  <div class="table-container">
+    <div class="table-header">
+      <div class="table-title">{{ 'common.attendance_reports' | translate }}</div>
+    </div>
+    <div class="table-body">
+
+      @if (isLoading()) {
+        <div>
+          <app-skeleton-table [rows]="4" [cols]="5"></app-skeleton-table>
+        </div>
+      }
+      @else {
+        <table>
+          <thead>
+            <tr>
+              <th>{{ 'common.employee_code' | translate }}</th>
+              <th>{{ 'common.name' | translate }}</th>
+              <th>{{ 'common.total_working_hours' | translate }}</th>
+              <th>{{ 'common.late_arrival' | translate }}</th>
+              <th>{{ 'common.early_departure' | translate }}</th>
+              <th>{{ 'common.absence' | translate }}</th>
+              <th>{{ 'common.worked_days' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (attendance of attendanceList(); track $index) {
+              <tr>
+                <td>{{ attendance.code }}</td>
+                <td>{{ attendance.name }}</td>
+                <td>{{ attendance.total_working_hours }}</td>
+                <td>{{ attendance.late_arrival }}</td>
+                <td>{{ attendance.early_departure }}</td>
+                <td>{{ attendance.absence }}</td>
+                <td>{{ attendance.worked_days }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+    <app-pagination-button
+      [currentPage]="currentPage()"
+      [isJisr]="true"
+      [nextPage]="nextPage()"
+      [previousPage]="previousPage()"
+      [totalPages]="totalPages()"
+      (pageChange)="loadStats($event)">
+    </app-pagination-button>
+  </div>
+</div>

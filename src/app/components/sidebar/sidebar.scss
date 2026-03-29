@@ -1,0 +1,59 @@
+.sidebar{
+  width:260px;
+  background:#fff;
+  position:fixed;
+  top:90px;
+  bottom:0;
+  overflow-y:auto;
+  box-shadow:2px 0 10px rgba(0,0,0,0.08);
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.nav-item {
+  display: block;
+  padding: 12px 20px;
+  color: #555;
+  font-size: 17px;
+  font-weight: 500;
+  margin: 5px;
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  transition: 0.2s ease;
+}
+
+.nav-item.active,
+.nav-item:hover {
+  background: linear-gradient(90deg, rgb(189, 206, 226) 0%, rgb(233, 238, 243) 100%) !important;
+  color: rgb(8, 22, 102);
+  border: 1px solid #5d72e9;
+}
+
+.nav-item .icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 4px !important;
+  border-radius: 7px !important;
+  background-color: rgb(199, 209, 223) !important;
+}
+
+.nav-item.active .icon,
+.nav-item:hover .icon {
+  background-color: rgb(161, 182, 207) !important;
+}
+
+.fa-solid {
+  color: rgb(0, 71, 163);
+}
+
+.nav-item.active .fa-solid,
+.nav-item:hover .fa-solid {
+  color: rgb(0, 56, 129);
+}

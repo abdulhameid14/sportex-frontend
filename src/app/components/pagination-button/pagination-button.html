@@ -1,0 +1,13 @@
+@if (!isJisr) {
+  <div class="pagination">
+    <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">‹ {{ 'pagination.previous' | translate }}</button>
+    <button (click)="changePage(currentPage + 1)" [disabled]="(itemsPerPage < pageLimit) || lastPageReached">{{ 'pagination.next' | translate }} ›</button>
+  </div>
+}
+
+@if (isJisr) {
+  <div class="pagination">
+    <button (click)="goToPage(previousPage!)" [disabled]="!previousPage"> ‹ {{ 'pagination.previous' | translate }} </button>
+    <button (click)="goToPage(nextPage!)" [disabled]="!nextPage"> {{ 'pagination.next' | translate }} › </button>
+  </div>
+}

@@ -1,0 +1,75 @@
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  overflow: visible;
+}
+
+/* Fixed top header */
+app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 64px; /* adjust to your header height */
+  z-index: 1000;
+}
+
+/* Sidebar + Main side by side */
+.app-body {
+  display: flex;
+  flex: 1;
+  margin-top: 90px;
+  overflow: visible;
+}
+
+/* Overlay for mobile sidebar */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+  z-index: 900; /* below header (1000) but above main content */
+}
+
+/* Sidebar */
+app-sidebar {
+  display: none;
+  z-index: 999;
+  width: 250px;
+  flex-shrink: 0;
+  background: #fff;
+  border-right: 1px solid #e0e0e0;
+  overflow-y: auto;
+  transition: transform 0.3s ease;
+}
+
+/* Main content */
+.main-content {
+  flex: 1;
+  background: #f9fafc;
+  padding: 20px;
+  overflow: visible;
+  min-height: calc(100dvh - 90px); /* use dynamic viewport height */
+}
+
+/* Prevent background scroll when overlay is active */
+body.no-scroll,
+html.no-scroll {
+  overflow: hidden !important;
+  height: 100%;
+  overscroll-behavior: none;
+}
+
+/* Responsive */
+@media (max-width: 1000px) {
+  .app-body {
+    flex-direction: column;
+  }
+  app-sidebar {
+    width: 100%;
+  }
+}
+
+
